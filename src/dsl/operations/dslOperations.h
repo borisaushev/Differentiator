@@ -2,6 +2,8 @@
 #define DIFFERENTIATOR_DSLOPERATIONS_H
 #include "treeSctruct.h"
 
-int executeTree(treeNode_t* node);
+int findTreeValue(treeNode_t* node);
+
+treeNode_t* differentiate(treeNode_t* node);
 
 #endif //DIFFERENTIATOR_DSLOPERATIONS_H

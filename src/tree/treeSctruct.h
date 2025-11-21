@@ -40,9 +40,10 @@ typedef enum tree_error {
     TR_CANT_OPEN_FILE
 } tree_error_t;
 
-treeNode_t* createValue(int value, nodeType_t nodeType, treeNode* left, treeNode* right);
-treeNode_t* createOperation(nodeOperation_t operation, nodeType_t nodeType, treeNode* left, treeNode* right);
-treeNode_t* createParameter(char param, nodeType_t nodeType, treeNode* left, treeNode* right);
+treeNode_t* createValue(int value, treeNode* left, treeNode* right);
+treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right);
+treeNode_t* createParameter(char param, treeNode* left, treeNode* right);
+treeNode_t* createNode(nodeData data, treeNode* left, treeNode* right);
 
 int getParameterValue(char param);
 

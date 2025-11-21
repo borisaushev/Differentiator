@@ -18,9 +18,12 @@ int main() {
     SAFE_CALL(parseNode(&cur, &root, buffer));
     TREE_DUMP(root, "parsed tree dump", DSL_SUCCESS);
 
-    printf("result: %d\n", executeTree(root));
+    printf("result: %d\n", findTreeValue(root));
 
     SAFE_CALL(saveDslData(root));
+
+    differentiate(root);
+    TREE_DUMP(root, "derivative", DSL_SUCCESS);
 
     free(buffer);
 

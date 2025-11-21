@@ -3,7 +3,7 @@
 #include "treeDump.h"
 #include "treeSctruct.h"
 
-int executeTree(treeNode_t* node) {
+int findTreeValue(treeNode_t* node) {
     if (node == NULL) {
         PRINTERR("NULL NODE");
         return 0;
@@ -19,16 +19,16 @@ int executeTree(treeNode_t* node) {
         case OPERATION_TYPE: {
             switch (getData(node).parameter) {
                 case NODE_ADD: {
-                    return executeTree(getLeft(node)) + executeTree(getRight(node));
+                    return findTreeValue(getLeft(node)) + findTreeValue(getRight(node));
                 }
                 case NODE_SUB: {
-                    return executeTree(getLeft(node)) - executeTree(getRight(node));
+                    return findTreeValue(getLeft(node)) - findTreeValue(getRight(node));
                 }
                 case NODE_MUL: {
-                    return executeTree(getLeft(node)) * executeTree(getRight(node));
+                    return findTreeValue(getLeft(node)) * findTreeValue(getRight(node));
                 }
                 case NODE_DIV: {
-                    return executeTree(getLeft(node)) / executeTree(getRight(node));
+                    return findTreeValue(getLeft(node)) / findTreeValue(getRight(node));
                 }
                 default: {
                     PRINTERR("invalid operation");
@@ -45,35 +45,57 @@ int executeTree(treeNode_t* node) {
     return 0;
 }
 
-treeNode* copyTree(treeNode_t node) {
-    return NULL; //TODO
+treeNode* copyTree(treeNode_t* node) {
+    if (node == NULL) {
+        return NULL;
+    }
+    return createNode(getData(node), copyTree(getLeft(node)), copyTree(getRight(node)));
 }
 
-void differentiate(treeNode_t* node) {
+treeNode_t* differentiate(treeNode_t* node) {
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
             setData(node, {0});
-            return;
+            return node;
         }
         case OPERATION_TYPE: {
             switch (getData(node).operation) {
                 case NODE_ADD: {
                     differentiate(getLeft(node));
                     differentiate(getRight(node));
-                    break;
+                    return node;
                 }
                 case NODE_SUB: {
                     differentiate(getLeft(node));
                     differentiate(getRight(node));
-                    break;
+                    return node;
                 }
                 case NODE_MUL: {
-                     setData(node, {NODE_ADD});
-                     treeNode_t* left = getLeft(node);
-                     treeNode_t* right = getLeft(node);
+                    setData(node, {NODE_ADD});
+                    treeNode_t* left = getLeft(node);
+                    treeNode_t* right = getRight(node);
 
+                    treeNode_t* leftCopy = copyTree(left);
+                    treeNode_t* rightCopy = copyTree(right);
+
+                    return createOperation(NODE_ADD,
+                                           createOperation(NODE_MUL, differentiate(left), rightCopy),
+                                           createOperation(NODE_MUL, differentiate(right), leftCopy));
+                }
+                default: {
+                    PRINTERR("invalid operation");
+                    return NULL;
                 }
             }
+        }
+        case PARAM_TYPE: {
+            setData(node, {getData(node).parameter == 'x' ? 1 : 0});
+            setNodeType(node, NUMBER_TYPE);
+            return node;
+        }
+        default: {
+            PRINTERR("invalid node type");
+            return NULL;
         }
     }
 }

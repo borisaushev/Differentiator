@@ -1,11 +1,11 @@
 digraph G {
-Node_0 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#917df9">000002cef5937c00</font> | type: OPERATION | val: MUL | {L: <font face="monospace" color="#415259">000002cef5937c60</font> | R: <font face="monospace" color="#b68a99">000002cef5937ca0</font>}}>; ]
-Node_1 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#415259">000002cef5937c60</font> | type: PARAMETER | x = 5 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_0 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#aeb645">00000147db817c20</font> | type: OPERATION | val: ADD | {L: <font face="monospace" color="#186807">00000147db817e60</font> | R: <font face="monospace" color="#e95265">00000147db817c40</font>}}>; ]
+Node_1 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#186807">00000147db817e60</font> | type: NUMBER | val: 1 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_0->Node_1
-Node_2 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#b68a99">000002cef5937ca0</font> | type: OPERATION | val: ADD | {L: <font face="monospace" color="#c0939b">000002cef5937e20</font> | R: <font face="monospace" color="#f126b9">000002cef5937cc0</font>}}>; ]
+Node_2 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#e95265">00000147db817c40</font> | type: OPERATION | val: ADD | {L: <font face="monospace" color="#0e5f05">00000147db817ce0</font> | R: <font face="monospace" color="#d3c2e5">00000147db817cc0</font>}}>; ]
 Node_0->Node_2
-Node_3 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#c0939b">000002cef5937e20</font> | type: PARAMETER | x = 5 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_3 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#0e5f05">00000147db817ce0</font> | type: NUMBER | val: 1 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_2->Node_3
-Node_4 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#f126b9">000002cef5937cc0</font> | type: NUMBER | val: 6 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_4 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face="monospace" color="#d3c2e5">00000147db817cc0</font> | type: NUMBER | val: 0 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_2->Node_4
 }

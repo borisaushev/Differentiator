@@ -54,7 +54,7 @@ int getParameterValue(char param) {
     return parameter;
 }
 
-treeNode_t* createParameter(char param, nodeType_t nodeType, treeNode* left, treeNode* right) {
+treeNode_t* createParameter(char param, treeNode* left, treeNode* right) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
 
     if (parameter == 0) {
@@ -65,7 +65,7 @@ treeNode_t* createParameter(char param, nodeType_t nodeType, treeNode* left, tre
         }
     }
     printf("\n");
-    result->nodeType = nodeType;
+    result->nodeType = PARAM_TYPE;
     result->left = left;
     result->right = right;
 
@@ -74,9 +74,9 @@ treeNode_t* createParameter(char param, nodeType_t nodeType, treeNode* left, tre
     return result;
 }
 
-treeNode_t* createValue(int value, nodeType_t nodeType, treeNode* left, treeNode* right) {
+treeNode_t* createValue(int value, treeNode* left, treeNode* right) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
-    result->nodeType = nodeType;
+    result->nodeType = NUMBER_TYPE;
     result->left = left;
     result->right = right;
 
@@ -85,13 +85,24 @@ treeNode_t* createValue(int value, nodeType_t nodeType, treeNode* left, treeNode
     return result;
 }
 
-treeNode_t* createOperation(nodeOperation_t operation, nodeType_t nodeType, treeNode* left, treeNode* right) {
+treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
-    result->nodeType = nodeType;
+    result->nodeType = OPERATION_TYPE;
     result->left = left;
     result->right = right;
 
     result->data = {operation};
+
+    return result;
+}
+
+treeNode_t* createNode(nodeData data, treeNode* left, treeNode* right) {
+    treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+    result->nodeType = OPERATION_TYPE;
+    result->left = left;
+    result->right = right;
+
+    result->data = data;
 
     return result;
 }
