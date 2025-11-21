@@ -54,64 +54,48 @@ int getParameterValue(char param) {
     return parameter;
 }
 
-int createParameter(treeNode_t** result, char param, nodeType_t nodeType, treeNode* left, treeNode* right) {
-    assert(result);
-    *result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+treeNode_t* createParameter(char param, nodeType_t nodeType, treeNode* left, treeNode* right) {
+    treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
 
     if (parameter == 0) {
         printf("what's the value of parameter '%c'?  ", param);
         if (scanf("%d", &parameter) != 1) {
-            RETURN_ERR(TR_INVALID_INPUT, "invalid parameter input");
+            PRINTERR("invalid parameter input");
+            return NULL;
         }
     }
     printf("\n");
+    result->nodeType = nodeType;
+    result->left = left;
+    result->right = right;
 
-    if (*result == NULL) {
-        RETURN_ERR(TR_NULL_PTR, "unable to allocate memory for node");
-    }
+    result->data = {param};
 
-    (*result)->nodeType = nodeType;
-    (*result)->left = left;
-    (*result)->right = right;
-
-    (*result)->data = {param};
-
-    return TR_SUCCESS;
+    return result;
 }
 
-int createValue(treeNode_t** result, int value, nodeType_t nodeType, treeNode* left, treeNode* right) {
-    assert(result);
-    *result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+treeNode_t* createValue(int value, nodeType_t nodeType, treeNode* left, treeNode* right) {
+    treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+    result->nodeType = nodeType;
+    result->left = left;
+    result->right = right;
 
-    if (*result == NULL) {
-        RETURN_ERR(TR_NULL_PTR, "unable to allocate memory for node");
-    }
+    result->data = {value};
 
-    (*result)->nodeType = nodeType;
-    (*result)->left = left;
-    (*result)->right = right;
-
-    (*result)->data = {value};
-
-    return TR_SUCCESS;
+    return result;
 }
 
-int createOperation(treeNode_t** result, nodeOperation_t operation, nodeType_t nodeType, treeNode* left, treeNode* right) {
-    assert(result);
-    *result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+treeNode_t* createOperation(nodeOperation_t operation, nodeType_t nodeType, treeNode* left, treeNode* right) {
+    treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
+    result->nodeType = nodeType;
+    result->left = left;
+    result->right = right;
 
-    if (*result == NULL) {
-        RETURN_ERR(TR_NULL_PTR, "unable to allocate memory for node");
-    }
+    result->data = {operation};
 
-    (*result)->nodeType = nodeType;
-    (*result)->left = left;
-    (*result)->right = right;
-
-    (*result)->data = {operation};
-
-    return TR_SUCCESS;
+    return result;
 }
+
 
 static void countTreeSize(treeNode_t* node, size_t* size) {
     if ((*size)++ > MAX_TREE_DEPTH) {

@@ -49,10 +49,11 @@ treeNode* copyTree(treeNode_t node) {
     return NULL; //TODO
 }
 
-treeNode* differentiate(treeNode_t* node) {
+void differentiate(treeNode_t* node) {
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
-            return 0;
+            setData(node, {0});
+            return;
         }
         case OPERATION_TYPE: {
             switch (getData(node).operation) {
@@ -68,6 +69,8 @@ treeNode* differentiate(treeNode_t* node) {
                 }
                 case NODE_MUL: {
                      setData(node, {NODE_ADD});
+                     treeNode_t* left = getLeft(node);
+                     treeNode_t* right = getLeft(node);
 
                 }
             }

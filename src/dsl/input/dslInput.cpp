@@ -78,23 +78,23 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
 
         switch(**curPos) {
             case '+': {
-                createOperation(cur, NODE_ADD, OPERATION_TYPE, NULL, NULL);
+                *cur = createOperation(NODE_ADD, OPERATION_TYPE, NULL, NULL);
                 break;
             }
             case '-': {
-                createOperation(cur, NODE_SUB, OPERATION_TYPE, NULL, NULL);
+                *cur = createOperation(NODE_SUB, OPERATION_TYPE, NULL, NULL);
                 break;
             }
             case '*': {
-                createOperation(cur, NODE_MUL, OPERATION_TYPE, NULL, NULL);
+                *cur = createOperation(NODE_MUL, OPERATION_TYPE, NULL, NULL);
                 break;
             }
             case '/': {
-                createOperation(cur, NODE_DIV, OPERATION_TYPE, NULL, NULL);
+                *cur = createOperation(NODE_DIV, OPERATION_TYPE, NULL, NULL);
                 break;
             }
             case 'x': {
-                createParameter(cur, 'x', PARAM_TYPE, NULL, NULL);
+                *cur = createParameter('x', PARAM_TYPE, NULL, NULL);
                 break;
             }
             default: {
@@ -105,7 +105,7 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
                              **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
                     }
                     *curPos += n;
-                    createValue(cur, input, NUMBER_TYPE, NULL, NULL);
+                    *cur = createValue(input, NUMBER_TYPE, NULL, NULL);
                 }
                 else {
                     PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
