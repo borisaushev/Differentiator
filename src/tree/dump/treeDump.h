@@ -7,7 +7,13 @@ const int TREE_BACK_COLOR = 0x56db70;
 
 int treeDump(treeNode_t* node, const char* desc, const char* file, const int line, const char* func, int code, const char* fillColor);
 int treeLog(const char* message, ...);
-int treeLogTex(const char* message, ...);
+
+void logTreeTex(treeNode_t* node);
+int logTex(const char* message, ...);
+void texLogRec(treeNode_t* node);
+int logTexMath(const char* message, ...);
+void closeTex();
+
 unsigned int getColor(void* ptr);
 
 #ifdef DEBUG_TREE

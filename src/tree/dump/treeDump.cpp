@@ -57,27 +57,7 @@ static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* con
         }
         case OPERATION_TYPE: {
             fprintf(file, "| type: OPERATION | val: ");
-            switch (getData(node).operation) {
-                case NODE_ADD: {
-                    fprintf(file, "ADD");
-                    break;
-                }
-                case NODE_SUB: {
-                    fprintf(file, "SUB");
-                    break;
-                }
-                case NODE_MUL: {
-                    fprintf(file, "MUL");
-                    break;
-                }
-                case NODE_DIV: {
-                    fprintf(file, "DIV");
-                    break;
-                }
-                default: {
-                    PRINTERR("Invalid node operation");
-                }
-            }
+            fprintf(file, "%s", DSL_OPERATIONS_INFO[getData(node).operation].representation);
             fprintf(file, " | ");
             break;
         }
@@ -163,23 +143,99 @@ int treeLog(const char* message, ...) {
     return TR_SUCCESS;
 }
 
-int treeLogTex(const char* message, ...) {
-    // #ifdef DEBUG_TREE
-    //     FILE* texFile = fopen(TEX_FILE_PATH, "a");
-    //     if (!texFile) {
-    //         RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open TEX log file");
-    //     }
-    //
-    //     // Стиль для всего сообщения
-    //     va_list args;
-    //     va_start(args, message);
-    //     vfprintf(texFile, message, args);
-    //     va_end(args);
-    //
-    //     fclose(texFile);
-    // #endif
+static size_t count = 0;
+int logTexMath(const char* message, ...) {
+    #ifdef DEBUG_TREE
+        FILE* texFile = fopen(TEX_FILE_PATH, count == 0 ? "w" : "a");
+        if (!texFile) {
+            RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open TEX log file");
+        }
+
+        if (count++ == 0) {
+            fprintf(texFile, "\\documentclass[12pt, letterpaper]{article}\n"
+                             "\\author{Boss Boriss}\n"
+                             "\\begin{document}\n"
+                             "\\section*{Behold! The Differentiator itself!}\n\n");
+        }
+
+        // Стиль для всего сообщения
+        fprintf(texFile, "\\begin{math}\n");
+        va_list args;
+        va_start(args, message);
+        vfprintf(texFile, message, args);
+        va_end(args);
+        fprintf(texFile, "\n\\end{math}\n\n");
+        fclose(texFile);
+    #endif
     return TR_SUCCESS;
 }
+
+int logTex(const char* message, ...) {
+    #ifdef DEBUG_TREE
+        FILE* texFile = fopen(TEX_FILE_PATH, count == 0 ? "w" : "a");
+        if (!texFile) {
+            RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open TEX log file");
+        }
+
+        if (count++ == 0) {
+            fprintf(texFile, "\\documentclass[12pt, letterpaper]{article}\n"
+                             "\\author{Boss Boriss}\n"
+                             "\\begin{document}\n"
+                             "\\section*{Behold! The Differentiator itself!}\n\n");
+        }
+
+        // Стиль для всего сообщения
+        va_list args;
+        va_start(args, message);
+        vfprintf(texFile, message, args);
+        va_end(args);
+
+        fclose(texFile);
+    #endif
+    return TR_SUCCESS;
+}
+
+
+void texLogRec(treeNode_t* node) {
+    if (node == NULL) {
+        return;
+    }
+    switch (getNodeType(node)) {
+        case NUMBER_TYPE: {
+            logTex("%d", getData(node).number);
+            return;
+        }
+        case OPERATION_TYPE: {
+            logTex("(");
+            texLogRec(getLeft(node));
+
+            logTex(" %s ", DSL_OPERATIONS_INFO[getData(node).operation].representation);
+
+            texLogRec(getRight(node));
+            logTex(")");
+            return;
+        }
+        case PARAM_TYPE: {
+            logTex("%c", getData(node).parameter);
+            return;
+        }
+        default: {
+            PRINTERR("invalid node type");
+        }
+    }
+}
+
+void logTreeTex(treeNode_t* node) {
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex("\n\\end{math}\n\n");
+}
+
+
+void closeTex() {
+    logTex("\\end{document}");
+}
+
 
 int treeDump(treeNode_t* node, const char* desc, const char* file,
              const int   line, const char* func, int code, const char* const fillColor) {

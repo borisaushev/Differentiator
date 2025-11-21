@@ -1,1 +1,1 @@
-(*( x nil nil ) ( + ( x nil nil ) ( 6 nil nil ) ) ) 
+(*(*( x nil nil ) ( x nil nil ) ) ( + (5 nil nil) (4 nil nil ) ) )

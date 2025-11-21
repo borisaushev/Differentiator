@@ -6,4 +6,8 @@ int findTreeValue(treeNode_t* node);
 
 treeNode_t* differentiate(treeNode_t* node);
 
+double groupConstants(treeNode_t* node);
+
+void printTree(treeNode_t* node);
+
 #endif //DIFFERENTIATOR_DSLOPERATIONS_H

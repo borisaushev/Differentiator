@@ -98,6 +98,7 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
                 break;
             }
             default: {
+                //Парсим число
                 if (**curPos >= '0' && **curPos <= '9') {
                     int input = -1, n = -1;
                     if (sscanf(*curPos, "%d%n", &input, &n) != 1) {
@@ -165,66 +166,4 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
 void readUserAnswer(char inp[MAX_LINE_LENGTH]) {
     scanf("%[^\n]", inp);
     getchar();
-}
-
-void writeNodeRec(treeNode_t* node, FILE* file) {
-    if (node == NULL) {
-        fprintf(file, NULL_NODE_STRING);
-        fprintf(file, " ");
-    }
-    else {
-        fprintf(file, "(");
-        switch(getNodeType(node)) {
-            case NUMBER_TYPE: {
-                fprintf(file, " %d ", getData(node).number);
-                break;
-            }
-            case OPERATION_TYPE: {
-                switch (getData(node).operation) {
-                    case NODE_ADD: {
-                        fprintf(file, " + ");
-                        break;
-                    }
-                    case NODE_SUB: {
-                        fprintf(file, " - ");
-                        break;
-                    }
-                    case NODE_MUL: {
-                        fprintf(file, "*");
-                        break;
-                    }
-                    case NODE_DIV: {
-                        fprintf(file, "/");
-                        break;
-                    }
-                    default: {
-                        PRINTERR("Invalid node operation");
-                    }
-                }
-                break;
-            }
-            case PARAM_TYPE: {
-                fprintf(file, " %c ", getData(node).parameter);
-                break;
-            }
-            default: {
-                PRINTERR("UNEXPECTED NODE TYPE: %d\n", getNodeType(node));
-                fprintf(file, "UNEXPECTED NODE TYPE");
-            }
-        }
-        writeNodeRec(getLeft(node), file);
-        writeNodeRec(getRight(node), file);
-        fprintf(file, ") ");
-    }
-}
-
-int saveDslData(treeNode_t* root) {
-    FILE* file = fopen(DSL_FILE_PATH, "w");
-    if (file == NULL) {
-        RETURN_ERR(DSL_NULL_PTR, "unable to open file");
-    }
-    writeNodeRec(root, file);
-
-    fclose(file);
-    return DSL_SUCCESS;
 }

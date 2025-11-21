@@ -9,6 +9,21 @@ typedef enum nodeOperation {
     NODE_DIV,
 } nodeOperation_t;
 
+typedef struct operationInfo {
+    nodeOperation_t operation;
+    const char* representation;
+} operationInfo_t;
+
+const operationInfo_t DSL_OPERATIONS_INFO[] = {
+    {NODE_ADD, "+"},
+    {NODE_SUB, "-"},
+    {NODE_MUL, "*"},
+    {NODE_DIV, "/"},
+};
+
+const int DSL_OPERATIONS_COUNT = sizeof(DSL_OPERATIONS_INFO) / sizeof(operationInfo_t);
+
+
 typedef enum nodeType {
     OPERATION_TYPE = 0,
     NUMBER_TYPE = 1,
@@ -43,7 +58,7 @@ typedef enum tree_error {
 treeNode_t* createValue(int value, treeNode* left, treeNode* right);
 treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right);
 treeNode_t* createParameter(char param, treeNode* left, treeNode* right);
-treeNode_t* createNode(nodeData data, treeNode* left, treeNode* right);
+treeNode_t* createNode(nodeData data, nodeType_t nodeType, treeNode* left, treeNode* right);
 
 int getParameterValue(char param);
 

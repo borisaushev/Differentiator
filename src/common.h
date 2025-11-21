@@ -37,6 +37,7 @@ const int MAX_TREE_DEPTH = 10000;
     BEGIN \
         fprintf(stderr, "\033[31m"); \
         fprintf(stderr, __VA_ARGS__); \
+        fprintf(stderr, " at %s:%d\n", __FILE__, __LINE__); \
         fprintf(stderr, "\033[0m"); \
         fflush(stderr); \
     END

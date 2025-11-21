@@ -96,9 +96,9 @@ treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode*
     return result;
 }
 
-treeNode_t* createNode(nodeData data, treeNode* left, treeNode* right) {
+treeNode_t* createNode(nodeData data, nodeType_t nodeType, treeNode* left, treeNode* right) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
-    result->nodeType = OPERATION_TYPE;
+    result->nodeType = nodeType;
     result->left = left;
     result->right = right;
 
