@@ -4,6 +4,12 @@
 #include "treeDump.h"
 #include "treeSctruct.h"
 
+    //макросы
+    //tex dump
+    //optimization
+    //variables
+    //TODO d(pow)
+    //cleanup
 int findTreeValue(treeNode_t* node) {
     if (node == NULL) {
         PRINTERR("NULL NODE");
@@ -11,12 +17,6 @@ int findTreeValue(treeNode_t* node) {
     }
     treeLog("Finding tree value");
     TREE_DUMP(node, "findTreeValue", DSL_SUCCESS);
-
-    //tex dump
-    //optimization
-    //variables
-    //TODO d(pow)
-    //cleanup
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
             treeLog("returning number: %d", getData(node).number);
@@ -146,16 +146,13 @@ treeNode_t* differentiate(treeNode_t* node) {
                     treeNode_t* rightCopy = copyTree(right);
                     TREE_DUMP(rightCopy, "copied right tree", DSL_SUCCESS);
 
-
                     treeNode_t * dLeft = differentiate(left);
                     TREE_DUMP(dLeft, "d/dx Left tree", DSL_SUCCESS);
 
                     treeNode_t * dRight = differentiate(right);
                     TREE_DUMP(dRight, "d/dx Right tree", DSL_SUCCESS);
 
-                    treeNode_t* result = createOperation(NODE_ADD,
-                                                         createOperation(NODE_MUL, dLeft, rightCopy),
-                                                         createOperation(NODE_MUL, dRight, leftCopy));
+                    treeNode_t* result = ADD(MUL(dLeft, rightCopy), MUL(dRight, leftCopy));
 
                     TREE_DUMP(result, "new operation", DSL_SUCCESS);
                     return result;
