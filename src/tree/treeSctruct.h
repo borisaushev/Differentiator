@@ -2,58 +2,7 @@
 #define TREE_TREESCTRUCT_H
 #include "common.h"
 
-typedef enum nodeOperation {
-    NODE_ADD,
-    NODE_SUB,
-    NODE_MUL,
-    NODE_DIV,
-} nodeOperation_t;
 
-typedef struct operationInfo {
-    nodeOperation_t operation;
-    const char* representation;
-} operationInfo_t;
-
-const operationInfo_t DSL_OPERATIONS_INFO[] = {
-    {NODE_ADD, "+"},
-    {NODE_SUB, "-"},
-    {NODE_MUL, "*"},
-    {NODE_DIV, "/"},
-};
-
-const int DSL_OPERATIONS_COUNT = sizeof(DSL_OPERATIONS_INFO) / sizeof(operationInfo_t);
-
-
-typedef enum nodeType {
-    OPERATION_TYPE = 0,
-    NUMBER_TYPE = 1,
-    PARAM_TYPE = 2,
-} nodeType_t;
-
-union nodeData {
-    int number;
-    char parameter;
-    nodeOperation_t operation;
-};
-
-typedef nodeData treeElType_t;
-
-typedef struct treeNode {
-    nodeType_t nodeType;
-    treeElType_t data;
-    treeNode* left;
-    treeNode* right;
-} treeNode_t;
-
-typedef enum tree_error {
-    TR_SUCCESS = 0,
-    TR_NULL_PTR,
-    TR_INVALID_PTR,
-    TR_FILE_NOT_FOUND,
-    TR_INVALID_INPUT,
-    TR_INVALID_SIZE,
-    TR_CANT_OPEN_FILE
-} tree_error_t;
 
 treeNode_t* createValue(int value, treeNode* left, treeNode* right);
 treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right);
@@ -70,6 +19,10 @@ void setLeft(treeNode_t* node, treeNode_t* left);
 
 treeElType_t getData(treeNode_t* node);
 void setData(treeNode_t* node, treeElType_t data);
+
+int getNumber(treeNode* node);
+char getParameter(treeNode* node);
+nodeOperation_t getOperation(treeNode* node);
 
 nodeType_t getNodeType(treeNode_t* node);
 void setNodeType(treeNode_t* node, nodeType_t nodeType);

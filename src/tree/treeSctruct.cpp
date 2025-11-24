@@ -33,11 +33,25 @@ treeElType_t getData(treeNode_t* node) {
     return node->data;
 }
 
-
 void setData(treeNode_t* node, treeElType_t data) {
     assert(node);
 
     node->data = data;
+}
+
+int getNumber(treeNode* node) {
+    assert(node);
+    return getData(node).number;
+}
+
+char getParameter(treeNode* node) {
+    assert(node);
+    return getData(node).parameter;
+}
+
+nodeOperation_t getOperation(treeNode* node) {
+    assert(node);
+    return getData(node).operation;
 }
 
 nodeType_t getNodeType(treeNode_t* node) {

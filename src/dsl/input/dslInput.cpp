@@ -1,6 +1,7 @@
 #include "dslInput.h"
 
 #include "common.h"
+#include "dslOperations.h"
 #include "treeDump.h"
 
 
@@ -61,6 +62,20 @@ void dumpBuffer(char **curPos, const char *buffer) {
     treeLog(dumpString);
 }
 
+static int parseSubtrees(char **curPos, treeNode_t **cur, const char *buffer) {
+    treeLog("Parsing left subtree");
+    SAFE_CALL(parseNode(curPos, &(*cur)->left, buffer));
+    treeLog("Parsed left subtree");
+    TREE_DUMP(*cur, "Parsed left subtree", DSL_SUCCESS);
+
+    treeLog("Parsing right subtree");
+    SAFE_CALL(parseNode(curPos, &(*cur)->right, buffer));
+    treeLog("Parsed right subtree");
+    TREE_DUMP(*cur, "Parsed right subtree", DSL_SUCCESS);
+
+    return DSL_SUCCESS;
+}
+
 int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
     skipSpaces(curPos);
 
@@ -76,68 +91,50 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
         dumpBuffer(curPos, buffer);
         skipSpaces(curPos);
 
-        switch(**curPos) {
-            case '+': {
-                *cur = createOperation(NODE_ADD, NULL, NULL);
+        bool operationFound = false;
+        for (int i = 0; i < DSL_OPERATIONS_COUNT; i++) {
+            if (**curPos == DSL_OPERATIONS_INFO[i].representation) {
+                *cur = createOperation(DSL_OPERATIONS_INFO[i].operation, NULL, NULL);
+                operationFound = true;
                 break;
             }
-            case '-': {
-                *cur = createOperation(NODE_SUB, NULL, NULL);
-                break;
-            }
-            case '*': {
-                *cur = createOperation(NODE_MUL, NULL, NULL);
-                break;
-            }
-            case '/': {
-                *cur = createOperation(NODE_DIV, NULL, NULL);
-                break;
-            }
-            case 'x': {
+        }
+
+        if (!operationFound) {
+            if (**curPos == 'x') {
                 *cur = createParameter('x', NULL, NULL);
-                break;
             }
-            default: {
-                //Парсим число
-                if (**curPos >= '0' && **curPos <= '9') {
-                    int input = -1, n = -1;
-                    if (sscanf(*curPos, "%d%n", &input, &n) != 1) {
-                        PRINTERR("Expected number, Invalid character '%c' (%d) at %s:%d:%zu\n",
-                             **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-                    }
-                    *curPos += n;
-                    *cur = createValue(input, NULL, NULL);
+            //Парсим число
+            else if (isdigit(**curPos)) {
+                int input = -1, n = -1;
+                if (sscanf(*curPos, "%d%n", &input, &n) != 1) {
+                    PRINTERR("Expected number, Invalid character '%c' (%d) at %s:%d:%zu\n",
+                         **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
                 }
-                else {
-                    PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
-                             **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-                    RETURN_ERR(DSL_INVALID_INPUT, "Expected number, parameter or operation");
-                }
+                *curPos += n;
+                *cur = createValue(input, NULL, NULL);
+            }
+            else {
+                PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
+                         **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
+                RETURN_ERR(DSL_INVALID_INPUT, "Expected number, parameter or operation");
             }
         }
 
         treeLog("Created new node");
         TREE_DUMP(*cur, "Created node", 0);
+
         (*curPos)++;
-
-
         skipSpaces(curPos);
         treeLog("skipped data");
         dumpBuffer(curPos, buffer);
 
-        treeLog("Parsing left subtree");
-        SAFE_CALL(parseNode(curPos, &(*cur)->left, buffer));
-        treeLog("Parsed left subtree");
-        TREE_DUMP(*cur, "Parsed left subtree", DSL_SUCCESS);
-
-        treeLog("Parsing right subtree");
-        SAFE_CALL(parseNode(curPos, &(*cur)->right, buffer));
-        treeLog("Parsed right subtree");
-        TREE_DUMP(*cur, "Parsed right subtree", DSL_SUCCESS);
+        SAFE_CALL(parseSubtrees(curPos, cur, buffer));
 
         skipSpaces(curPos);
         if (**curPos != ')') {
-            PRINTERR("Expecting ')', Invalid character '%c' (%d) at %s:%d:%zu\n", **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
+            PRINTERR("Expecting ')', Invalid character '%c' (%d) at %s:%d:%zu\n",
+                     **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
 
             RETURN_ERR(DSL_INVALID_INPUT, "expected ')'");
         }
@@ -158,7 +155,8 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
             return DSL_SUCCESS;
         }
     else {
-        PRINTERR("Expected '(' or nil, invalid character '%c', (%d) at %s:%d:%zu\n", **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
+        PRINTERR("Expected '(' or nil, invalid character '%c', (%d) at %s:%d:%zu\n",
+                 **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
         RETURN_ERR(DSL_INVALID_INPUT, "invalid input tree");
     }
 }

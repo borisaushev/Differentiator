@@ -23,16 +23,12 @@ int main() {
     logTreeTex(root);
     logTex("\ngiven that x = %d\n", getParameterValue('x'));
 
-
-
-    groupConstants(root);
+    constantsFolding(root);
     printf("\nsimplified\n");
     printTree(root);
     TREE_DUMP(root, "simplified tree", DSL_SUCCESS);
     logTex("\n\\section{simplified expression}\n");
     logTreeTex(root);
-
-
 
     printf(" = %d\n", findTreeValue(root));
 
@@ -45,7 +41,7 @@ int main() {
     logTex("\\section{expression derivative}\n");
     logTreeTex(root);
 
-    groupConstants(root);
+    constantsFolding(root);
     printTree(root);
     TREE_DUMP(root, "simplified tree", DSL_SUCCESS);
     logTex("\n\\section{simplified expression}\n");

@@ -4,12 +4,71 @@
 #include "treeDump.h"
 #include "treeSctruct.h"
 
-    //макросы
-    //tex dump
-    //optimization
-    //variables
-    //TODO d(pow)
-    //cleanup
+int addFunction(treeNode_t *node) {
+    int leftValue = findTreeValue(getLeft(node));
+    int rightValue = findTreeValue(getRight(node));
+    treeLog("adding trees");
+    int value = leftValue + rightValue;
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = %d + %d = %d", leftValue, rightValue, value);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("Add result: %d", value);
+    TREE_DUMP(node, "After add", DSL_SUCCESS);
+    return value;
+}
+
+int subtractionFunction(treeNode_t *node) {
+    int leftValue = findTreeValue(getLeft(node));
+    int rightValue = findTreeValue(getRight(node));
+
+    treeLog("subtracting trees");
+    int value =  leftValue - rightValue;
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = %d - %d = %d", leftValue, rightValue, value);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("Sub result: %d", value);
+    TREE_DUMP(node, "After sub", DSL_SUCCESS);
+    return value;
+}
+
+int multiplicationFunction(treeNode_t *node) {
+    int leftValue = findTreeValue(getLeft(node));
+    int rightValue = findTreeValue(getRight(node));
+    treeLog("multiplying trees");
+    int value =  leftValue * rightValue;
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = %d * %d = %d", leftValue, rightValue, value);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("Mul result: %d", value);
+    TREE_DUMP(node, "After mul", DSL_SUCCESS);
+    return value;
+}
+
+int divisionFunction(treeNode_t *node) {
+    int leftValue = findTreeValue(getLeft(node));
+    int rightValue = findTreeValue(getRight(node));
+    treeLog("dividing trees");
+    int value =  leftValue / rightValue;
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = \\frac{%d}{%d} = %d", leftValue, rightValue, value);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("Div result: %d", value);
+    TREE_DUMP(node, "After div", DSL_SUCCESS);
+    return value;
+}
+
 int findTreeValue(treeNode_t* node) {
     if (node == NULL) {
         PRINTERR("NULL NODE");
@@ -19,7 +78,7 @@ int findTreeValue(treeNode_t* node) {
     TREE_DUMP(node, "findTreeValue", DSL_SUCCESS);
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
-            treeLog("returning number: %d", getData(node).number);
+            treeLog("returning number: %d", getNumber(node));
             return getData(node).number;
         }
         case PARAM_TYPE: {
@@ -28,66 +87,7 @@ int findTreeValue(treeNode_t* node) {
             return value;
         }
         case OPERATION_TYPE: {
-            int leftValue = findTreeValue(getLeft(node));
-            int rightValue = findTreeValue(getRight(node));
-            switch (getData(node).parameter) {
-                case NODE_ADD: {
-                    treeLog("adding trees");
-                    int value = leftValue + rightValue;
-
-                    logTex("\\begin{math}\n");
-                    texLogRec(node);
-                    logTex(" = %d + %d = %d", leftValue, rightValue, value);
-                    logTex("\n\\end{math}\n\n");
-
-                    treeLog("Add result: %d", value);
-                    TREE_DUMP(node, "After add", DSL_SUCCESS);
-                    return value;
-                }
-                case NODE_SUB: {
-                    treeLog("subtracting trees");
-                    int value =  leftValue - rightValue;
-
-                    logTex("\\begin{math}\n");
-                    texLogRec(node);
-                    logTex(" = %d - %d = %d", leftValue, rightValue, value);
-                    logTex("\n\\end{math}\n\n");
-
-                    treeLog("Sub result: %d", value);
-                    TREE_DUMP(node, "After sub", DSL_SUCCESS);
-                    return value;
-                }
-                case NODE_MUL: {
-                    treeLog("multiplying trees");
-                    int value =  leftValue * rightValue;
-
-                    logTex("\\begin{math}\n");
-                    texLogRec(node);
-                    logTex(" = %d * %d = %d", leftValue, rightValue, value);
-                    logTex("\n\\end{math}\n\n");
-
-                    treeLog("Mul result: %d", value);
-                    TREE_DUMP(node, "After mul", DSL_SUCCESS);
-                    return value;
-                }
-                case NODE_DIV: {
-                    treeLog("dividing trees");
-                    int value =  leftValue / rightValue;
-
-                    logTex("\\begin{math}\n");
-                    texLogRec(node);
-                    logTex(" = \\fraq{%d}{%d} = %d", leftValue, rightValue, value);
-                    logTex("\n\\end{math}\n\n");
-
-                    treeLog("Div result: %d", value);
-                    TREE_DUMP(node, "After div", DSL_SUCCESS);
-                    return value;
-                }
-                default: {
-                    PRINTERR("invalid operation");
-                    return 0;
-                }
-            }
+            return DSL_OPERATIONS_INFO[getOperation(node)].operationFunction(node);
         }
         default: {
             PRINTERR("invalid node type");
@@ -105,6 +105,75 @@ treeNode* copyTree(treeNode_t* node) {
     return createNode(getData(node), getNodeType(node), copyTree(getLeft(node)), copyTree(getRight(node)));
 }
 
+treeNode_t* diffAddition(treeNode_t* node) {
+    treeLog("Differentiating addition");
+    differentiate(getLeft(node));
+    TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
+
+    treeLog("Differentiating left tree");
+    differentiate(getRight(node));
+    TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
+
+    return node;
+}
+
+treeNode_t* diffSubtraction(treeNode_t* node) {
+    treeLog("Differentiating subtraction");
+    differentiate(getLeft(node));
+    TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
+
+    treeLog("Differentiating left tree");
+    differentiate(getRight(node));
+    TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
+    return node;
+}
+
+treeNode_t* diffMultiplication(treeNode_t* node) {
+    treeLog("Differentiating multiplication");
+    setData(node, {NODE_ADD});
+    treeNode_t* left = getLeft(node);
+    treeNode_t* right = getRight(node);
+
+    treeNode_t* leftCopy = copyTree(left);
+    TREE_DUMP(leftCopy, "copied left tree", DSL_SUCCESS);
+    treeNode_t* rightCopy = copyTree(right);
+    TREE_DUMP(rightCopy, "copied right tree", DSL_SUCCESS);
+
+    treeNode_t * dLeft = differentiate(left);
+    TREE_DUMP(dLeft, "d/dx Left tree", DSL_SUCCESS);
+
+    treeNode_t * dRight = differentiate(right);
+    TREE_DUMP(dRight, "d/dx Right tree", DSL_SUCCESS);
+
+    treeNode_t* result = ADD(MUL(dLeft, rightCopy), MUL(dRight, leftCopy));
+
+    TREE_DUMP(result, "new operation", DSL_SUCCESS);
+    return result;
+}
+
+treeNode_t* diffDivision(treeNode_t* node) {
+    treeLog("Differentiating division");
+    setData(node, {NODE_DIV});
+    treeNode_t* left = getLeft(node);
+    treeNode_t* right = getRight(node);
+
+    treeNode_t* leftCopy = copyTree(left);
+    TREE_DUMP(leftCopy, "copied left tree", DSL_SUCCESS);
+    treeNode_t* rightCopy = copyTree(right);
+    TREE_DUMP(leftCopy, "copied right tree", DSL_SUCCESS);
+
+    treeNode_t* dLeft = differentiate(left);
+    TREE_DUMP(dLeft, "d/dx Left tree", DSL_SUCCESS);
+
+    treeNode_t* dRight = differentiate(right);
+    TREE_DUMP(dRight, "d/dx Right tree", DSL_SUCCESS);
+
+    treeNode_t* result = DIV(SUB(MUL(dLeft, rightCopy), MUL(dRight, leftCopy)), MUL(rightCopy, rightCopy));
+    TREE_DUMP(result, "new operation", DSL_SUCCESS);
+
+    return result;
+}
+
 treeNode_t* differentiate(treeNode_t* node) {
     TREE_DUMP(node, "Differentiating tree", DSL_SUCCESS);
     switch (getNodeType(node)) {
@@ -113,55 +182,11 @@ treeNode_t* differentiate(treeNode_t* node) {
             return node;
         }
         case OPERATION_TYPE: {
-            switch (getData(node).operation) {
-                case NODE_ADD: {
-                    treeLog("Differentiating addition");
-                    differentiate(getLeft(node));
-                    TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
-
-                    treeLog("Differentiating left tree");
-                    differentiate(getRight(node));
-                    TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
-
-                    return node;
-                }
-                case NODE_SUB: {
-                    treeLog("Differentiating subtraction");
-                    differentiate(getLeft(node));
-                    TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
-
-                    treeLog("Differentiating left tree");
-                    differentiate(getRight(node));
-                    TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
-                    return node;
-                }
-                case NODE_MUL: {
-                    treeLog("Differentiating multiplication");
-                    setData(node, {NODE_ADD});
-                    treeNode_t* left = getLeft(node);
-                    treeNode_t* right = getRight(node);
-
-                    treeNode_t* leftCopy = copyTree(left);
-                    TREE_DUMP(leftCopy, "copied left tree", DSL_SUCCESS);
-                    treeNode_t* rightCopy = copyTree(right);
-                    TREE_DUMP(rightCopy, "copied right tree", DSL_SUCCESS);
-
-                    treeNode_t * dLeft = differentiate(left);
-                    TREE_DUMP(dLeft, "d/dx Left tree", DSL_SUCCESS);
-
-                    treeNode_t * dRight = differentiate(right);
-                    TREE_DUMP(dRight, "d/dx Right tree", DSL_SUCCESS);
-
-                    treeNode_t* result = ADD(MUL(dLeft, rightCopy), MUL(dRight, leftCopy));
-
-                    TREE_DUMP(result, "new operation", DSL_SUCCESS);
-                    return result;
-                }
-                default: {
-                    PRINTERR("invalid operation");
-                    return NULL;
-                }
+            if ((int) getOperation(node) < 0 || (int) getOperation(node) >= DSL_OPERATIONS_COUNT) {
+                PRINTERR("invalid operation");
+                return NULL;
             }
+            return DSL_OPERATIONS_INFO[getOperation(node)].diffFunction(node);
         }
         case PARAM_TYPE: {
             setData(node, {getData(node).parameter == 'x' ? 1 : 0});
@@ -181,20 +206,20 @@ void printTree(treeNode_t* node) {
     }
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
-            printf("%d", getData(node).number);
+            printf("%d", getNumber(node));
             return;
         }
         case OPERATION_TYPE: {
             printf("(");
             printTree(getLeft(node));
 
-            printf(" %s ", DSL_OPERATIONS_INFO[getData(node).operation].representation);
+            printf(" %c ", DSL_OPERATIONS_INFO[getOperation(node)].representation);
 
             printTree(getRight(node));
             printf(")");
         }
         case PARAM_TYPE: {
-            printf("%c", getData(node).parameter);
+            printf("%c", getParameter(node));
             return;
         }
         default: {
@@ -203,7 +228,7 @@ void printTree(treeNode_t* node) {
     }
 }
 
-double groupConstants(treeNode_t* node) {
+double constantsFolding(treeNode_t* node) {
     if (node == NULL) {
         return NAN;
     }
@@ -216,8 +241,8 @@ double groupConstants(treeNode_t* node) {
             return NAN;
         }
         case OPERATION_TYPE: {
-            double leftValue = groupConstants(getLeft(node));
-            double rightValue = groupConstants(getRight(node));
+            double leftValue = constantsFolding(getLeft(node));
+            double rightValue = constantsFolding(getRight(node));
             if (isnan(leftValue) || isnan(rightValue)) {
                 return NAN;
             }

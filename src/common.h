@@ -16,6 +16,7 @@ const char* const DOT_FILE_PATH = "..\\files\\logs\\tree\\images\\tree.dot";
 const char* const SVG_FORMAT = "..\\files\\logs\\tree\\images\\tree_%zu.svg";
 
 const int MAX_TREE_DEPTH = 10000;
+const int BACK_COLOR = 0x56db70;
 
 #define BEGIN do {
 #define END   } while (0)
@@ -69,5 +70,61 @@ const int MAX_TREE_DEPTH = 10000;
         PRINTERR("ERROR [%s:%d]: %s (code %d)\n", __FILE__, __LINE__, desc, code); \
         BB_FAIL(code); \
     END
+
+typedef enum dsl_error {
+    DSL_SUCCESS = 0,
+    DSL_NULL_PTR,
+    DSL_INVALID_CAPACITY,
+    DSL_INVALID_INDEX,
+    DSL_INVALID_PTR,
+    DSL_FILE_NOT_FOUND,
+    DSL_INVALID_INPUT,
+    DSL_CANT_OPEN_FILE
+} dsl_error_t;
+
+const int MAX_LINE_LENGTH = 1000;
+
+const char* const NULL_NODE_STRING = "nil";
+
+const char* const DSL_FILE_PATH = "../files/dsl/dsl.txt";
+
+
+typedef enum nodeOperation {
+    NODE_ADD,
+    NODE_SUB,
+    NODE_MUL,
+    NODE_DIV,
+} nodeOperation_t;
+
+typedef enum nodeType {
+    OPERATION_TYPE = 0,
+    NUMBER_TYPE = 1,
+    PARAM_TYPE = 2,
+} nodeType_t;
+
+union nodeData {
+    int number;
+    char parameter;
+    nodeOperation_t operation;
+};
+
+typedef nodeData treeElType_t;
+
+typedef struct treeNode {
+    nodeType_t nodeType;
+    treeElType_t data;
+    treeNode* left;
+    treeNode* right;
+} treeNode_t;
+
+typedef enum tree_error {
+    TR_SUCCESS = 0,
+    TR_NULL_PTR,
+    TR_INVALID_PTR,
+    TR_FILE_NOT_FOUND,
+    TR_INVALID_INPUT,
+    TR_INVALID_SIZE,
+    TR_CANT_OPEN_FILE
+} tree_error_t;
 
 #endif //TREE_COMMON_H

@@ -1,54 +1,18 @@
-#include"TXLib.h"
+#include "D:\TX\TXLib-20251118.h"
 #include "treeDump.h"
 
 #include <cstdarg>
 
 #include "dslInput.h"
+#include "dslOperations.h"
 #include "stack.h"
-
-double deltaE76(unsigned int color1, unsigned int color2) {
-    COLORREF hsl1 =  txRGB2HSL(color1);
-    COLORREF hsl2 =  txRGB2HSL(color2);
-
-    unsigned int h1 = txExtractColor(hsl1, TX_HUE);
-    unsigned int s1 = txExtractColor(hsl1, TX_SATURATION);
-    unsigned int l1 = txExtractColor(hsl1, TX_LIGHTNESS);
-
-    unsigned int h2 = txExtractColor(hsl2, TX_HUE);
-    unsigned int s2 = txExtractColor(hsl2, TX_SATURATION);
-    unsigned int l2 = txExtractColor(hsl2, TX_LIGHTNESS);
-
-    int dh = (h1 - h2);
-    int ds = (s1 - s2);
-    int dl = (l1 - l2);
-
-    return sqrt(dh * dh + ds * ds + dl * dl);
-}
-
-unsigned int invertColorIfNeeded(unsigned int ptrColor, unsigned int backColor) {
-    double deltaE = deltaE76(ptrColor, backColor);
-
-    // printf("invertColorIfNeeded: deltaE76: %lg, color: %06x, back color: %06x\n", deltaE, ptrColor, backColor);
-
-    if (deltaE < 20) {
-        // printf("invertColorIfNeeded: INVERTED color: %06x\n", ~ptrColor & 0xFFFFFF);
-        return ~ptrColor & 0xFFFFFF;
-    }
-
-    return ptrColor;
-}
-
-unsigned int getColor(void* ptr) {
-    unsigned int color = djb2Hash(&ptr, sizeof(ptr)) & 0x00FFFFFF;
-    // printf("getColor: color = %06x\n", color);
-    return invertColorIfNeeded(color, TREE_BACK_COLOR);
-}
 
 static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* const fillColor) {
     fprintf(file, "Node_%d [shape=Mrecord; style=filled; fillcolor = \"%s\"; "
                   "color = \"black\"; "
-                  "label = <{ptr: <font face=\"monospace\" color=\"#%06x\">%p</font> ",
-            index, fillColor, getColor(node), node);
+                  "label = <{ptr: ",
+            index, fillColor);
+    $ptrHTML(file, node, BACK_COLOR);
 
     switch(getNodeType(node)) {
         case NUMBER_TYPE: {
@@ -57,7 +21,7 @@ static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* con
         }
         case OPERATION_TYPE: {
             fprintf(file, "| type: OPERATION | val: ");
-            fprintf(file, "%s", DSL_OPERATIONS_INFO[getData(node).operation].representation);
+            fprintf(file, "%c", DSL_OPERATIONS_INFO[getData(node).operation].representation);
             fprintf(file, " | ");
             break;
         }
@@ -73,16 +37,17 @@ static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* con
     }
 
     if (getLeft(node) != NULL) {
-        fprintf(file, "{L: <font face=\"monospace\" color=\"#%06x\">%p</font>",
-                getColor(getLeft(node)), getLeft(node));
+        fprintf(file, "{L: ");
+        $ptrHTML(file, getLeft(node), BACK_COLOR);
     }
     else {
         fprintf(file, "{L: <font face=\"monospace\" color=\"blue\">NULL</font>");
     }
 
     if (getRight(node) != NULL) {
-        fprintf(file, " | R: <font face=\"monospace\" color=\"#%06x\">%p</font>}}>; ]\n",
-                getColor(getRight(node)), getRight(node));
+        fprintf(file, " | R: ");
+        $ptrHTML(file, getRight(node), BACK_COLOR);
+        fprintf(file, "}}>; ]\n");
     }
     else {
         fprintf(file, " | R: <font face=\"monospace\" color=\"blue\"> NULL</font>}}>; ]\n");
@@ -202,21 +167,21 @@ void texLogRec(treeNode_t* node) {
     }
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
-            logTex("%d", getData(node).number);
+            logTex("%d", getNumber(node));
             return;
         }
         case OPERATION_TYPE: {
             logTex("(");
             texLogRec(getLeft(node));
 
-            logTex(" %s ", DSL_OPERATIONS_INFO[getData(node).operation].representation);
+            logTex(" %c ", DSL_OPERATIONS_INFO[getOperation(node)].representation);
 
             texLogRec(getRight(node));
             logTex(")");
             return;
         }
         case PARAM_TYPE: {
-            logTex("%c", getData(node).parameter);
+            logTex("%c", getParameter(node));
             return;
         }
         default: {
