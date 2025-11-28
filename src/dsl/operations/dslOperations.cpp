@@ -107,22 +107,21 @@ treeNode* copyTree(treeNode_t* node) {
 
 treeNode_t* diffAddition(treeNode_t* node) {
     treeLog("Differentiating addition");
-    differentiate(getLeft(node));
+    setLeft(node, differentiate(getLeft(node)));
     TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
 
-    treeLog("Differentiating left tree");
-    differentiate(getRight(node));
+    treeLog("Differentiating right tree");
+    setRight(node, differentiate(getRight(node)));
     TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
     return node;
 }
 
 treeNode_t* diffSubtraction(treeNode_t* node) {
     treeLog("Differentiating subtraction");
-    differentiate(getLeft(node));
+    setLeft(node, differentiate(getLeft(node)));
     TREE_DUMP(node, "after differentiating left tree", DSL_SUCCESS);
 
-    treeLog("Differentiating left tree");
-    differentiate(getRight(node));
+    setLeft(node, differentiate(getRight(node)));
     TREE_DUMP(node, "after differentiating right tree", DSL_SUCCESS);
     return node;
 }
@@ -263,10 +262,34 @@ double constantsFolding(treeNode_t* node, bool* changed) {
             setRight(node, NULL);
 
             setNodeType(node, NUMBER_TYPE);
-            int sum = (int) (leftValue + rightValue);
-            setData(node, {sum});
+
+            double result = NAN;
+            switch (getOperation(node)) {
+                case NODE_ADD: {
+                    result = leftValue + rightValue;
+                    break;
+                }
+                case NODE_SUB: {
+                    result = leftValue - rightValue;
+                    break;
+                }
+                case NODE_MUL: {
+                    result = leftValue * rightValue;
+                    break;
+                }
+                case NODE_DIV: {
+                    result = leftValue / rightValue;
+                    break;
+                }
+                default: {
+                    PRINTERR("invalid operation");
+                    return NAN;
+                }
+            }
+
+            setData(node, {(int) result});
             *changed = true;
-            return leftValue + rightValue;
+            return result;
         }
     }
     return NAN;
@@ -343,7 +366,7 @@ void optimizeDivision(treeNode_t *node, treeNode_t *left, treeNode_t *right, boo
     }
 }
 
-int operationsFolding(treeNode_t* node, bool* changed) {
+int removeRedurantOperations(treeNode_t* node, bool* changed) {
     if (node == NULL) {
         return DSL_SUCCESS;
     }
@@ -376,8 +399,8 @@ int operationsFolding(treeNode_t* node, bool* changed) {
             break;
         }
     }
-    operationsFolding(getLeft(node),  changed);
-    operationsFolding(getRight(node), changed);
+    removeRedurantOperations(getLeft(node),  changed);
+    removeRedurantOperations(getRight(node), changed);
     TREE_DUMP(node, "After optimization: ", DSL_SUCCESS);
 
     return DSL_SUCCESS;

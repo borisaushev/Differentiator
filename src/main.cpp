@@ -13,9 +13,16 @@ int main() {
     char* buffer = NULL;
     SAFE_CALL(readFile(DSL_FILE_PATH, &buffer, &bytesRead));
 
-    treeNode_t* root = {};
+    initDslParametersValues();
+
     char* cur = buffer;
-    SAFE_CALL(parseNode(&cur, &root, buffer));
+    treeNode_t* root = getExpression(&cur, buffer);
+    if (*cur != '\0') {
+        PRINTERR("Invalid input. Invalid character '%c' (%d) at %s:%d:%zu\n",
+                 *cur, *cur, DSL_FILE_PATH, 1, (cur - buffer + 1));
+        return DSL_INVALID_INPUT;
+    }
+    // SAFE_CALL(parseNode(&cur, &root, buffer));
     TREE_DUMP(root, "parsed tree dump", DSL_SUCCESS);
 
     printTree(root);
@@ -28,7 +35,7 @@ int main() {
     while (changed) {
         changed = false;
         constantsFolding (root, &changed);
-        operationsFolding(root, &changed);
+        removeRedurantOperations(root, &changed);
         TREE_DUMP(root, "After two optimizations in main\n", DSL_SUCCESS);
     }
 
@@ -54,8 +61,8 @@ int main() {
     changed = true;
     while (changed) {
         changed = false;
-        constantsFolding (root, &changed);
-        operationsFolding(root, &changed);
+        constantsFolding(root, &changed);
+        removeRedurantOperations(root, &changed);
         TREE_DUMP(root, "After two optimizations in main\n", DSL_SUCCESS);
     }
 

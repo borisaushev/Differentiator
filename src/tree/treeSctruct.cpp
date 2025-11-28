@@ -6,8 +6,6 @@
 #include "common.h"
 #include "treeDump.h"
 
-static int parameter = 0;
-
 treeNode_t* getRight(treeNode_t* node) {
     assert(node);
     return node->right;
@@ -65,34 +63,44 @@ void setNodeType(treeNode_t* node, nodeType_t nodeType) {
 }
 
 int getParameterValue(char param) {
-    return parameter;
+    return PARAMETERS[param - 'A'];
 }
 
-treeNode_t* createParameter(char param, treeNode* left, treeNode* right) {
+void initDslParametersValues() {
+    for (int i = 0; i < DSL_PARAMETERS_COUNT; i++) {
+        PARAMETERS[i] = DSL_POISON;
+    }
+}
+
+treeNode_t* createParameter(char param) {
+    assert(param >= 'A' && param <= 'z');
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
 
-    if (parameter == 0) {
+    int index = param - 'A';
+    if (PARAMETERS[index] == DSL_POISON) {
         printf("what's the value of parameter '%c'?  ", param);
-        if (scanf("%d", &parameter) != 1) {
+        int value = 0;
+        if (scanf("%d", &value) != 1) {
             PRINTERR("invalid parameter input");
             return NULL;
         }
+        PARAMETERS[index] = value;
     }
     printf("\n");
     result->nodeType = PARAM_TYPE;
-    result->left = left;
-    result->right = right;
+    result->left = NULL;
+    result->right = NULL;
 
     result->data = {param};
 
     return result;
 }
 
-treeNode_t* createValue(int value, treeNode* left, treeNode* right) {
+treeNode_t* createValue(int value) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
     result->nodeType = NUMBER_TYPE;
-    result->left = left;
-    result->right = right;
+    result->left = NULL;
+    result->right = NULL;
 
     result->data = {value};
 

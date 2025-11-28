@@ -2,13 +2,17 @@
 #define TREE_TREESCTRUCT_H
 #include "common.h"
 
+const int DSL_POISON = 7777;
 
+const int DSL_PARAMETERS_COUNT = 'z' - 'A' + 1;
+static int PARAMETERS[DSL_PARAMETERS_COUNT] = {};
 
-treeNode_t* createValue(int value, treeNode* left, treeNode* right);
+treeNode_t* createValue(int value);
 treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right);
-treeNode_t* createParameter(char param, treeNode* left, treeNode* right);
+treeNode_t* createParameter(char param);
 treeNode_t* createNode(nodeData data, nodeType_t nodeType, treeNode* left, treeNode* right);
 
+void initDslParametersValues();
 int getParameterValue(char param);
 
 treeNode_t* getRight(treeNode_t* node);

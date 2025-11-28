@@ -4,6 +4,128 @@
 #include "dslOperations.h"
 #include "treeDump.h"
 
+treeNode_t* getNumber(char** curPos, char* start) {
+    skipSpaces(curPos);
+    int val = 0;
+    const char* curStart = *curPos;
+    while (isdigit(**curPos)) {
+        val = val * 10 + (**curPos - '0');
+        *curPos += 1;
+    }
+    if (curStart == *curPos) {
+        PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
+                 **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
+
+        return NULL;
+    }
+    skipSpaces(curPos);
+
+    dumpBuffer(curPos, start);
+    return createValue(val);
+}
+
+treeNode_t* getParameter(char** curPos, char* start) {
+    skipSpaces(curPos);
+
+    char ch = **curPos;
+    if (!isalpha(ch)) {
+        PRINTERR("Expected parameter name(one character). Invalid character '%c' (%d) at %s:%d:%zu\n",
+                 **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
+        return NULL;
+    }
+    *curPos += 1;
+    skipSpaces(curPos);
+
+    dumpBuffer(curPos, start);
+    return createParameter(ch);
+}
+
+treeNode_t* getBlockExpression(char** curPos, char* start) {
+    skipSpaces(curPos);
+    char ch = **curPos;
+    if (ch == '(') {
+        *curPos += 1;
+        skipSpaces(curPos);
+        treeNode_t* expression = getExpression(curPos, start);
+        if (expression == NULL) {
+            return NULL;
+        }
+        skipSpaces(curPos);
+        if (**curPos != ')') {
+            PRINTERR("Expected closing bracket ')'. Invalid character '%c' (%d) at %s:%d:%zu\n",
+                 **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
+            return NULL;
+        }
+        *curPos += 1;
+        skipSpaces(curPos);
+        dumpBuffer(curPos, start);
+        return expression;
+    }
+    else if (isdigit(ch)) {
+        treeNode_t* result = getNumber(curPos, start);
+        dumpBuffer(curPos, start);
+        return result;
+    }
+    else {
+        treeNode_t* result = getParameter(curPos, start);
+        dumpBuffer(curPos, start);
+        return result;
+    }
+}
+
+treeNode_t* getExpression(char** curPos, char* start) {
+    treeNode_t* result = getHighPriorityExpression(curPos, start);
+    if (result == NULL) {
+        return NULL;
+    }
+    while (**curPos == '+' || **curPos == '-') {
+        char operation = **curPos;
+        *curPos += 1;
+        skipSpaces(curPos);
+
+        treeNode_t* expression = getHighPriorityExpression(curPos, start);
+        if (expression == NULL) {
+            return NULL;
+        }
+
+        if (operation == '+') {
+            result = createOperation(NODE_ADD, result, expression);
+        }
+        else {
+            result = createOperation(NODE_SUB, result, expression);
+        }
+    }
+
+    dumpBuffer(curPos, start);
+    return result;
+}
+
+treeNode_t* getHighPriorityExpression(char** curPos, char* start) {
+    treeNode_t* result = getBlockExpression(curPos, start);
+    if (result == NULL) {
+        return NULL;
+    }
+    while (**curPos == '*' || **curPos == '/') {
+        char operation = **curPos;
+        *curPos += 1;
+        skipSpaces(curPos);
+
+        treeNode_t* expression = getBlockExpression(curPos, start);
+        if (expression == NULL) {
+            return NULL;
+        }
+
+        if (operation == '*') {
+            result = createOperation(NODE_MUL, result, expression);
+        }
+        else {
+            result = createOperation(NODE_DIV, result, expression);
+        }
+    }
+
+    dumpBuffer(curPos, start);
+    return result;
+}
 
 long getFileSize(const char* filename) {
     struct stat st = {};
@@ -102,7 +224,7 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
 
         if (!operationFound) {
             if (**curPos == 'x') {
-                *cur = createParameter('x', NULL, NULL);
+                *cur = createParameter('x');
             }
             //Парсим число
             else if (isdigit(**curPos)) {
@@ -112,7 +234,7 @@ int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
                          **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
                 }
                 *curPos += n;
-                *cur = createValue(input, NULL, NULL);
+                *cur = createValue(input);
             }
             else {
                 PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
