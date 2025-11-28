@@ -23,7 +23,15 @@ int main() {
     logTreeTex(root);
     logTex("\ngiven that x = %d\n", getParameterValue('x'));
 
-    constantsFolding(root);
+    //префикс функция и кмп
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        constantsFolding (root, &changed);
+        operationsFolding(root, &changed);
+        TREE_DUMP(root, "After two optimizations in main\n", DSL_SUCCESS);
+    }
+
     printf("\nsimplified\n");
     printTree(root);
     TREE_DUMP(root, "simplified tree", DSL_SUCCESS);
@@ -32,24 +40,32 @@ int main() {
 
     printf(" = %d\n", findTreeValue(root));
 
+    logTex("\\section{expression derivative}\n");
     printf("d/dx(");
     printTree(root);
     printf(") = ");
 
     root = differentiate(root);
     TREE_DUMP(root, "derivative", DSL_SUCCESS);
-    logTex("\\section{expression derivative}\n");
+    logTex("Final derivative:\n");
     logTreeTex(root);
-
-    constantsFolding(root);
     printTree(root);
+
+    changed = true;
+    while (changed) {
+        changed = false;
+        constantsFolding (root, &changed);
+        operationsFolding(root, &changed);
+        TREE_DUMP(root, "After two optimizations in main\n", DSL_SUCCESS);
+    }
+
     TREE_DUMP(root, "simplified tree", DSL_SUCCESS);
-    logTex("\n\\section{simplified expression}\n");
+    logTex("\n\\section{simplified derivative}\n");
     logTreeTex(root);
 
+    printf("\nsimplified:\n");
     printTree(root);
-    printf(" = ");
-    printf("%d, when x = %d\n", findTreeValue(root), getParameterValue('x'));
+    printf(" = %d, when x = %d\n", findTreeValue(root), getParameterValue('x'));
 
     closeTex();
     free(buffer);

@@ -1,51 +1,39 @@
 digraph G {
-Node_0 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#482762">0x00000213f0cf9990</font>| type: OPERATION | val: / | {L: <font face = "Monospace" color = "#EFC2E1">0x00000213f0cf9ad0</font> | R: <font face = "Monospace" color = "#A64761">0x00000213f0cf9a50</font>}}>; ]
-Node_1 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#EFC2E1">0x00000213f0cf9ad0</font>| type: OPERATION | val: - | {L: <font face = "Monospace" color = "#A0107D">0x00000213f0cf9930</font> | R: <font face = "Monospace" color = "#2F7441">0x00000213f0cf9a30</font>}}>; ]
+Node_0 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#35883A">0x0000023a64ca89a0</font>| type: OPERATION | val: / | {L: <font face = "Monospace" color = "#9B1398">0x0000023a64ca8bc0</font> | R: <font face = "Monospace" color = "#A75A1E">0x0000023a64ca8d40</font>}}>; ]
+Node_1 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#9B1398">0x0000023a64ca8bc0</font>| type: OPERATION | val: - | {L: <font face = "Monospace" color = "#432F38">0x0000023a64ca8ba0</font> | R: <font face = "Monospace" color = "#C99AFA">0x0000023a64ca8960</font>}}>; ]
 Node_0->Node_1
-Node_2 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#A0107D">0x00000213f0cf9930</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#2A6483">0x00000213f0cf9870</font> | R: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font>}}>; ]
+Node_2 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#432F38">0x0000023a64ca8ba0</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#9A0CFE">0x0000023a64ca8d60</font> | R: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font>}}>; ]
 Node_1->Node_2
-Node_3 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#2A6483">0x00000213f0cf9870</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#C61FDE">0x00000213f0cf9a10</font> | R: <font face = "Monospace" color = "#0917C2">0x00000213f0cf9970</font>}}>; ]
+Node_3 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#9A0CFE">0x0000023a64ca8d60</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#F6C87D">0x0000023a64ca8e60</font> | R: <font face = "Monospace" color = "#4F75BE">0x0000023a64ca8d20</font>}}>; ]
 Node_2->Node_3
-Node_4 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#C61FDE">0x00000213f0cf9a10</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#9B21F7">0x00000213ef527e40</font> | R: <font face = "Monospace" color = "#EFF866">0x00000213f0cf9d90</font>}}>; ]
+Node_4 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#F6C87D">0x0000023a64ca8e60</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_3->Node_4
-Node_5 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#9B21F7">0x00000213ef527e40</font>| type: NUMBER | val: 1 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_4->Node_5
-Node_6 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#EFF866">0x00000213f0cf9d90</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_4->Node_6
-Node_7 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#0917C2">0x00000213f0cf9970</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#834ED7">0x00000213ef527e60</font> | R: <font face = "Monospace" color = "#7CF4A7">0x00000213f0cf9c90</font>}}>; ]
-Node_3->Node_7
-Node_8 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#834ED7">0x00000213ef527e60</font>| type: NUMBER | val: 1 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_7->Node_8
-Node_9 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#7CF4A7">0x00000213f0cf9c90</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_7->Node_9
-Node_10 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font> | R: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>}}>; ]
-Node_2->Node_10
-Node_11 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_10->Node_11
-Node_12 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_10->Node_12
-Node_13 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#2F7441">0x00000213f0cf9a30</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#E3E5B7">0x00000213ef527e80</font> | R: <font face = "Monospace" color = "#9F8292">0x00000213ef527ba0</font>}}>; ]
-Node_1->Node_13
-Node_14 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#E3E5B7">0x00000213ef527e80</font>| type: NUMBER | val: 1 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_5 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#4F75BE">0x0000023a64ca8d20</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_3->Node_5
+Node_6 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font> | R: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>}}>; ]
+Node_2->Node_6
+Node_7 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_6->Node_7
+Node_8 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_6->Node_8
+Node_9 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#C99AFA">0x0000023a64ca8960</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#D6E81A">0x0000023a64ca8940</font> | R: <font face = "Monospace" color = "#5D1CBC">0x0000023a64ca8f20</font>}}>; ]
+Node_1->Node_9
+Node_10 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D6E81A">0x0000023a64ca8940</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_9->Node_10
+Node_11 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#5D1CBC">0x0000023a64ca8f20</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_9->Node_11
+Node_12 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#A75A1E">0x0000023a64ca8d40</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font> | R: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font>}}>; ]
+Node_0->Node_12
+Node_13 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font> | R: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>}}>; ]
+Node_12->Node_13
+Node_14 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_13->Node_14
-Node_15 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#9F8292">0x00000213ef527ba0</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#886732">0x00000213ef527b80</font> | R: <font face = "Monospace" color = "#7C1E15">0x00000213ef527c20</font>}}>; ]
+Node_15 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
 Node_13->Node_15
-Node_16 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#886732">0x00000213ef527b80</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_15->Node_16
-Node_17 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#7C1E15">0x00000213ef527c20</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_15->Node_17
-Node_18 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#A64761">0x00000213f0cf9a50</font>| type: OPERATION | val: * | {L: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font> | R: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font>}}>; ]
-Node_0->Node_18
-Node_19 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font> | R: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>}}>; ]
-Node_18->Node_19
-Node_20 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_19->Node_20
-Node_21 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_19->Node_21
-Node_22 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D0B235">0x00000213ef527c00</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font> | R: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>}}>; ]
-Node_18->Node_22
-Node_23 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#DCFB52">0x00000213ef527be0</font>| type: PARAMETER | x = 15 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_22->Node_23
-Node_24 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#607DF2">0x00000213ef527bc0</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
-Node_22->Node_24
+Node_16 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#B5011C">0x0000023a64ca8f40</font>| type: OPERATION | val: + | {L: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font> | R: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>}}>; ]
+Node_12->Node_16
+Node_17 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#265679">0x0000023a64ca8a60</font>| type: PARAMETER | x = 16 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_16->Node_17
+Node_18 [shape=Mrecord; style=filled; fillcolor = "#56db70"; color = "black"; label = <{ptr: <font face = "Monospace" color = "#D741F8">0x0000023a64ca8b60</font>| type: NUMBER | val: 4 | {L: <font face="monospace" color="blue">NULL</font> | R: <font face="monospace" color="blue"> NULL</font>}}>; ]
+Node_16->Node_18
 }

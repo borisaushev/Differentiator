@@ -22,7 +22,8 @@ treeNode_t* diffSubtraction(treeNode_t *node);
 treeNode_t* diffMultiplication(treeNode_t *node);
 treeNode_t* diffDivision(treeNode_t* node);
 
-double constantsFolding(treeNode_t* node);
+double constantsFolding(treeNode_t* node, bool* changed);
+int operationsFolding(treeNode_t* node, bool* changed);
 
 void printTree(treeNode_t* node);
 

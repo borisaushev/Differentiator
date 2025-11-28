@@ -171,13 +171,25 @@ void texLogRec(treeNode_t* node) {
             return;
         }
         case OPERATION_TYPE: {
-            logTex("(");
+            if (getOperation(node) == NODE_DIV) {
+                logTex("\\frac{");
+                texLogRec(getLeft(node));
+                logTex("}{");
+                texLogRec(getRight(node));
+                logTex("}");
+                return;
+            }
+            if (getOperation(node) != NODE_MUL) {
+                logTex("(");
+            }
             texLogRec(getLeft(node));
 
             logTex(" %c ", DSL_OPERATIONS_INFO[getOperation(node)].representation);
 
             texLogRec(getRight(node));
-            logTex(")");
+            if (getOperation(node) != NODE_MUL) {
+                logTex(")");
+            }
             return;
         }
         case PARAM_TYPE: {
