@@ -99,6 +99,21 @@ double cosFunction(treeNode_t *node) {
     return result;
 }
 
+double lnFunction(treeNode_t *node) {
+    double expressionValue = findTreeValue(getLeft(node));
+    treeLog("evaluating ln");
+    double result = log(expressionValue);
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = \\ln{%.1f} = %.1f", expressionValue, result);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("ln result: %.1f", result);
+    TREE_DUMP(node, "After ln", DSL_SUCCESS);
+    return result;
+}
+
 double findTreeValue(treeNode_t* node) {
     if (node == NULL) {
         PRINTERR("NULL NODE");
@@ -230,6 +245,23 @@ treeNode_t* diffCos(treeNode_t* node) {
     TREE_DUMP(dExpression, "d/dx Left tree", DSL_SUCCESS);
 
     treeNode_t* result = MUL(NEG(COS(expressionCopy)), dExpression);
+    TREE_DUMP(result, "new operation", DSL_SUCCESS);
+
+    return result;
+}
+
+treeNode_t* diffLn(treeNode_t* node) {
+    treeLog("Differentiating ln");
+    setOperation(node, NODE_MUL);
+    treeNode_t* expression = getLeft(node);
+
+    treeNode_t* expressionCopy = copyTree(expression);
+    TREE_DUMP(expressionCopy, "copied left tree", DSL_SUCCESS);
+
+    treeNode_t* dExpression = differentiate(expression);
+    TREE_DUMP(dExpression, "d/dx Left tree", DSL_SUCCESS);
+
+    treeNode_t* result = DIV(dExpression, expressionCopy);
     TREE_DUMP(result, "new operation", DSL_SUCCESS);
 
     return result;

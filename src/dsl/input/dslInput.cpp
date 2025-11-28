@@ -58,7 +58,7 @@ static treeNode_t* getDslParameterOrFunction(char** curPos, char* start) {
             }
             *curPos += 1;
             skipSpaces(curPos);
-            return createOperation(NODE_SIN, node, NULL);
+            return createOperation(DSL_OPERATIONS_INFO[i].operation, node, NULL);
         }
     }
 

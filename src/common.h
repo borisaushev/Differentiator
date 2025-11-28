@@ -88,14 +88,14 @@ const char* const NULL_NODE_STRING = "nil";
 
 const char* const DSL_FILE_PATH = "../files/dsl/dsl.txt";
 
-
 typedef enum nodeOperation {
     NODE_ADD,
     NODE_SUB,
     NODE_MUL,
     NODE_DIV,
     NODE_SIN,
-    NODE_COS
+    NODE_COS,
+    NODE_LN,
 } nodeOperation_t;
 
 typedef enum nodeType {

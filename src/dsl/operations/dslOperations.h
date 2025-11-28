@@ -17,6 +17,7 @@ double multiplicationFunction(treeNode_t *node);
 double divisionFunction(treeNode_t *node);
 double sinFunction(treeNode_t *node);
 double cosFunction(treeNode_t *node);
+double lnFunction(treeNode_t *node);
 
 treeNode_t* differentiate(treeNode_t* node);
 
@@ -26,6 +27,7 @@ treeNode_t* diffMultiplication(treeNode_t *node);
 treeNode_t* diffDivision(treeNode_t* node);
 treeNode_t* diffCos(treeNode_t* node);
 treeNode_t* diffSin(treeNode_t* node);
+treeNode_t* diffLn(treeNode_t* node);
 
 double constantsFolding(treeNode_t* node, bool* changed);
 int removeRedurantOperations(treeNode_t* node, bool* changed);
@@ -45,8 +47,9 @@ const operationInfo_t DSL_OPERATIONS_INFO[] = {
     {NODE_SUB, "-",   subtractionFunction,    diffSubtraction,    false},
     {NODE_MUL, "*",   multiplicationFunction, diffMultiplication, false},
     {NODE_DIV, "/",   divisionFunction,       diffDivision,       false},
-    {NODE_SIN, "sin", sinFunction,            diffSin,            true},
-    {NODE_COS, "cos", cosFunction,            diffCos,            true},
+    {NODE_SIN, "sin", sinFunction,            diffSin,            true },
+    {NODE_COS, "cos", cosFunction,            diffCos,            true },
+    {NODE_LN,  "ln",  lnFunction,             diffLn,             true },
 };
 
 const int DSL_OPERATIONS_COUNT = sizeof(DSL_OPERATIONS_INFO) / sizeof(operationInfo_t);
