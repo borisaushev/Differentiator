@@ -29,15 +29,18 @@ treeNode_t* getParameter(char** curPos, char* start) {
 
     char ch = **curPos;
     if (!isalpha(ch)) {
-        PRINTERR("Expected parameter name(one character). Invalid character '%c' (%d) at %s:%d:%zu\n",
+        PRINTERR("Expected parameter name. Invalid character '%c' (%d) at %s:%d:%zu\n",
                  **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
         return NULL;
     }
-    *curPos += 1;
+    char paramName[MAX_LINE_LENGTH] = {};
+    int skipped = 0;
+    sscanf(*curPos, "%[A-Za-z]%n", paramName, &skipped);
+    *curPos += skipped;
     skipSpaces(curPos);
 
     dumpBuffer(curPos, start);
-    return createParameter(ch);
+    return createParameter(paramName);
 }
 
 treeNode_t* getBlockExpression(char** curPos, char* start) {
@@ -184,106 +187,3 @@ void dumpBuffer(char **curPos, const char *buffer) {
     treeLog(dumpString);
 }
 
-static int parseSubtrees(char **curPos, treeNode_t **cur, const char *buffer) {
-    treeLog("Parsing left subtree");
-    SAFE_CALL(parseNode(curPos, &(*cur)->left, buffer));
-    treeLog("Parsed left subtree");
-    TREE_DUMP(*cur, "Parsed left subtree", DSL_SUCCESS);
-
-    treeLog("Parsing right subtree");
-    SAFE_CALL(parseNode(curPos, &(*cur)->right, buffer));
-    treeLog("Parsed right subtree");
-    TREE_DUMP(*cur, "Parsed right subtree", DSL_SUCCESS);
-
-    return DSL_SUCCESS;
-}
-
-int parseNode(char** curPos, treeNode_t** cur, const char* buffer) {
-    skipSpaces(curPos);
-
-    treeLog("Parsing node");
-    dumpBuffer(curPos, buffer);
-
-    if (**curPos == '(') {
-        treeLog("Read '(' ");
-        skipSpaces(curPos);
-        (*curPos)++;
-
-        treeLog("skipped '('");
-        dumpBuffer(curPos, buffer);
-        skipSpaces(curPos);
-
-        bool operationFound = false;
-        for (int i = 0; i < DSL_OPERATIONS_COUNT; i++) {
-            if (**curPos == DSL_OPERATIONS_INFO[i].representation) {
-                *cur = createOperation(DSL_OPERATIONS_INFO[i].operation, NULL, NULL);
-                operationFound = true;
-                break;
-            }
-        }
-
-        if (!operationFound) {
-            if (**curPos == 'x') {
-                *cur = createParameter('x');
-            }
-            //Парсим число
-            else if (isdigit(**curPos)) {
-                int input = -1, n = -1;
-                if (sscanf(*curPos, "%d%n", &input, &n) != 1) {
-                    PRINTERR("Expected number, Invalid character '%c' (%d) at %s:%d:%zu\n",
-                         **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-                }
-                *curPos += n;
-                *cur = createValue(input);
-            }
-            else {
-                PRINTERR("Expected number, parameter or operation, Invalid character '%c' (%d) at %s:%d:%zu\n",
-                         **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-                RETURN_ERR(DSL_INVALID_INPUT, "Expected number, parameter or operation");
-            }
-        }
-
-        treeLog("Created new node");
-        TREE_DUMP(*cur, "Created node", 0);
-
-        (*curPos)++;
-        skipSpaces(curPos);
-        treeLog("skipped data");
-        dumpBuffer(curPos, buffer);
-
-        SAFE_CALL(parseSubtrees(curPos, cur, buffer));
-
-        skipSpaces(curPos);
-        if (**curPos != ')') {
-            PRINTERR("Expecting ')', Invalid character '%c' (%d) at %s:%d:%zu\n",
-                     **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-
-            RETURN_ERR(DSL_INVALID_INPUT, "expected ')'");
-        }
-        (*curPos)++;
-        skipSpaces(curPos);
-        treeLog("skipped ')'");
-        dumpBuffer(curPos, buffer);
-
-        return DSL_SUCCESS;
-    }
-    else if (strncmp(*curPos, NULL_NODE_STRING, 3) == 0) {
-            treeLog("found nil node");
-            *curPos += strlen(NULL_NODE_STRING);
-
-            treeLog("Skipped nil");
-            dumpBuffer(curPos, buffer);
-
-            return DSL_SUCCESS;
-        }
-    else {
-        PRINTERR("Expected '(' or nil, invalid character '%c', (%d) at %s:%d:%zu\n",
-                 **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - buffer + 1));
-        RETURN_ERR(DSL_INVALID_INPUT, "invalid input tree");
-    }
-}
-
-void readUserAnswer(char inp[MAX_LINE_LENGTH]) {
-    scanf("%[^\n]", inp);
-    getchar();
-}

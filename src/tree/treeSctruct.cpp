@@ -4,7 +4,19 @@
 #include <cstdio>
 
 #include "common.h"
+#include "stack.h"
 #include "treeDump.h"
+static dslParameter_t dslParameters[DSL_MAX_PARAMETERS] = {};
+static size_t dslParametersCount = 0;
+
+size_t getParametersCount() {
+    return dslParametersCount;
+}
+
+dslParameter_t* getParameter(size_t index) {
+    assert(index < dslParametersCount);
+    return &dslParameters[index];
+}
 
 treeNode_t* getRight(treeNode_t* node) {
     assert(node);
@@ -41,15 +53,28 @@ int getNumber(treeNode* node) {
     assert(node);
     return getData(node).number;
 }
+void setNumber(treeNode_t* node, int number) {
+    assert(node);
+    node->data.number = number;
+}
 
-char getParameter(treeNode* node) {
+dslParameter_t* getParameter(treeNode *node) {
     assert(node);
     return getData(node).parameter;
+}
+
+void setParameter(treeNode_t* node, dslParameter_t* parameter) {
+    assert(node);
+    (node->data).parameter = parameter;
 }
 
 nodeOperation_t getOperation(treeNode* node) {
     assert(node);
     return getData(node).operation;
+}
+void setOperation(treeNode_t* node, nodeOperation_t operation) {
+    assert(node);
+    node->data.operation = operation;
 }
 
 nodeType_t getNodeType(treeNode_t* node) {
@@ -62,36 +87,44 @@ void setNodeType(treeNode_t* node, nodeType_t nodeType) {
     node->nodeType = nodeType;
 }
 
-int getParameterValue(char param) {
-    return PARAMETERS[param - 'A'];
-}
 
 void initDslParametersValues() {
-    for (int i = 0; i < DSL_PARAMETERS_COUNT; i++) {
-        PARAMETERS[i] = DSL_POISON;
+    for (int i = 0; i < DSL_MAX_PARAMETERS; i++) {
+        dslParameters[i].value = DSL_POISON;
+        dslParameters[i].hash = DSL_POISON;
+        dslParameters[i].name = "";
     }
 }
 
-treeNode_t* createParameter(char param) {
-    assert(param >= 'A' && param <= 'z');
+treeNode_t* createParameter(char* param) {
+    assert(param);
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
 
-    int index = param - 'A';
-    if (PARAMETERS[index] == DSL_POISON) {
-        printf("what's the value of parameter '%c'?  ", param);
+    unsigned int hash = djb2StrHash(param);
+    for (size_t i = 0; i < dslParametersCount; i++) {
+        if (dslParameters[i].hash == hash) {
+            result->data.parameter = &dslParameters[i];
+            break;
+        }
+    }
+    if (result->data.parameter == NULL) {
+        printf("what's the value of parameter '%s'?  ", param);
         int value = 0;
         if (scanf("%d", &value) != 1) {
             PRINTERR("invalid parameter input");
             return NULL;
         }
-        PARAMETERS[index] = value;
+        dslParameters[dslParametersCount].name = strdup(param);
+        dslParameters[dslParametersCount].hash = hash;
+        dslParameters[dslParametersCount].value = value;
+        result->data.parameter = &dslParameters[dslParametersCount];
+
+        dslParametersCount++;
     }
     printf("\n");
     result->nodeType = PARAM_TYPE;
     result->left = NULL;
     result->right = NULL;
-
-    result->data = {param};
 
     return result;
 }
@@ -102,7 +135,7 @@ treeNode_t* createValue(int value) {
     result->left = NULL;
     result->right = NULL;
 
-    result->data = {value};
+    result->data = {.number = value};
 
     return result;
 }
@@ -113,7 +146,7 @@ treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode*
     result->left = left;
     result->right = right;
 
-    result->data = {operation};
+    result->data = {.operation = operation};
 
     return result;
 }

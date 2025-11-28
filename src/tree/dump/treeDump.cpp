@@ -26,8 +26,8 @@ static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* con
             break;
         }
         case PARAM_TYPE: {
-            char param = getData(node).parameter;
-            fprintf(file, "| type: PARAMETER | %c = %d | ", param, getParameterValue(param));
+            dslParameter_t* param = getData(node).parameter;
+            fprintf(file, "| type: PARAMETER | %s = %d | ", param->name, param->value);
             break;
         }
         default: {
@@ -193,7 +193,7 @@ void texLogRec(treeNode_t* node) {
             return;
         }
         case PARAM_TYPE: {
-            logTex("%c", getParameter(node));
+            logTex("%s", getParameter(node)->name);
             return;
         }
         default: {

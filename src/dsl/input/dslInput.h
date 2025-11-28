@@ -14,10 +14,6 @@ void dumpBuffer(char **curPos, const char *buffer);
 
 int readFile(const char *file_path, char** text, int* bytes_read);
 
-int parseNode(char** curPos, treeNode_t** cur, const char* bufferCopy);
-
-void readUserAnswer(char inp[MAX_LINE_LENGTH]);
-
 void writeNodeRec(treeNode_t* node, FILE* file);
 
 int saveDslData(treeNode_t* root);

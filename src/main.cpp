@@ -28,7 +28,11 @@ int main() {
     printTree(root);
     logTex("\\section{parsed expression}\n");
     logTreeTex(root);
-    logTex("\ngiven that x = %d\n", getParameterValue('x'));
+    logTex("\ngiven that:\n");
+    for (size_t i = 0; i < getParametersCount(); i++) {
+        dslParameter_t* param = getParameter(i);
+        logTex("%s = %d\n", param->name, param->value);
+    }
 
     //префикс функция и кмп
     bool changed = true;
@@ -72,7 +76,7 @@ int main() {
 
     printf("\nsimplified:\n");
     printTree(root);
-    printf(" = %d, when x = %d\n", findTreeValue(root), getParameterValue('x'));
+    printf(" = %d\n", findTreeValue(root));
 
     closeTex();
     free(buffer);

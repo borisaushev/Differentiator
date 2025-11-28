@@ -79,7 +79,7 @@ int validateStack(const stack_t* stack);
 int stackDumpStream(const stack_t *stack, int validation, FILE* dumpFile,
                         const char *file, int line, const char *function);
 
-int djb2StrHash(const char *str);
+unsigned int djb2StrHash(const char *str);
 
 unsigned int djb2Hash(const void *ptr, size_t size);
 

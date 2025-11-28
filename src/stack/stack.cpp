@@ -276,8 +276,8 @@ int stackDestroy(stack_t* stack) {
     return ST_SUCCESS;
 }
 
-int djb2StrHash(const char *str) {
-    int hash = 5381;
+unsigned int djb2StrHash(const char *str) {
+    unsigned int hash = 5381;
     for (size_t i = 0; i < strlen(str); i++) {
         hash = ((hash << 5) + hash) + (int) str[i];
     }

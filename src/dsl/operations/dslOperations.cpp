@@ -79,12 +79,11 @@ int findTreeValue(treeNode_t* node) {
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
             treeLog("returning number: %d", getNumber(node));
-            return getData(node).number;
+            return getNumber(node);
         }
         case PARAM_TYPE: {
-            int value = getParameterValue(getData(node).parameter);
-            treeLog("Returning parameter: %c = %d", getData(node).parameter, value);
-            return value;
+            treeLog("Returning parameter: %s = %d", getParameter(node)->name, getParameter(node)->value);
+            return getParameter(node)->value;
         }
         case OPERATION_TYPE: {
             return DSL_OPERATIONS_INFO[getOperation(node)].operationFunction(node);
@@ -98,7 +97,7 @@ int findTreeValue(treeNode_t* node) {
     return 0;
 }
 
-treeNode* copyTree(treeNode_t* node) {
+static treeNode* copyTree(treeNode_t* node) {
     if (node == NULL) {
         return NULL;
     }
@@ -128,7 +127,7 @@ treeNode_t* diffSubtraction(treeNode_t* node) {
 
 treeNode_t* diffMultiplication(treeNode_t* node) {
     treeLog("Differentiating multiplication");
-    setData(node, {NODE_ADD});
+    setOperation(node, NODE_ADD);
     treeNode_t* left = getLeft(node);
     treeNode_t* right = getRight(node);
 
@@ -151,7 +150,7 @@ treeNode_t* diffMultiplication(treeNode_t* node) {
 
 treeNode_t* diffDivision(treeNode_t* node) {
     treeLog("Differentiating division");
-    setData(node, {NODE_DIV});
+    setOperation(node, NODE_DIV);
     treeNode_t* left = getLeft(node);
     treeNode_t* right = getRight(node);
 
@@ -176,7 +175,7 @@ treeNode_t* differentiate(treeNode_t* node) {
     TREE_DUMP(node, "Differentiating tree", DSL_SUCCESS);
     switch (getNodeType(node)) {
         case NUMBER_TYPE: {
-            setData(node, {0});
+            setNumber(node, 0);
             return node;
         }
         case OPERATION_TYPE: {
@@ -198,7 +197,8 @@ treeNode_t* differentiate(treeNode_t* node) {
             return result;
         }
         case PARAM_TYPE: {
-            setData(node, {getData(node).parameter == 'x' ? 1 : 0});
+            const char* paramName = getData(node).parameter->name;
+            setNumber(node, !strcmp("x", paramName) ? 1 : 0);
             setNodeType(node, NUMBER_TYPE);
             return node;
         }
@@ -226,9 +226,10 @@ void printTree(treeNode_t* node) {
 
             printTree(getRight(node));
             printf(")");
+            return;
         }
         case PARAM_TYPE: {
-            printf("%c", getParameter(node));
+            printf("%s", getParameter(node)->name);
             return;
         }
         default: {
@@ -287,15 +288,19 @@ double constantsFolding(treeNode_t* node, bool* changed) {
                 }
             }
 
-            setData(node, {(int) result});
+            setNumber(node, (int) result);
             *changed = true;
             return result;
+        }
+        default: {
+            PRINTERR("invalid node type");
+            return NAN;
         }
     }
     return NAN;
 }
 
-void optimiseAddition(treeNode_t *node, bool *changed, treeNode_t *left, treeNode_t *right) {
+static void optimiseAddition(treeNode_t *node, bool *changed, treeNode_t *left, treeNode_t *right) {
     if (getNodeType(left) == NUMBER_TYPE && getNumber(left) == 0) {
         setData(node, getData(right));
         setNodeType(node, getNodeType(right));
@@ -310,13 +315,13 @@ void optimiseAddition(treeNode_t *node, bool *changed, treeNode_t *left, treeNod
     }
 }
 
-void optimizeMultiplication(treeNode_t *node, treeNode_t *left, treeNode_t *right, bool* changed) {
+static void optimizeMultiplication(treeNode_t *node, treeNode_t *left, treeNode_t *right, bool* changed) {
     if (getNodeType(left) == NUMBER_TYPE) {
         if (getNumber(left) == 0) {
             setNodeType(node, NUMBER_TYPE);
             setLeft(node, NULL);
             setRight(node, NULL);
-            setData(node, {0});
+            setNumber(node, 0);
 
             destroyTree(left);
             destroyTree(right);
@@ -339,7 +344,7 @@ void optimizeMultiplication(treeNode_t *node, treeNode_t *left, treeNode_t *righ
     }
 }
 
-void optimizeDivision(treeNode_t *node, treeNode_t *left, treeNode_t *right, bool *changed) {
+static void optimizeDivision(treeNode_t *node, treeNode_t *left, treeNode_t *right, bool *changed) {
     if (getNodeType(left) == NUMBER_TYPE && getNumber(left) == 0) {
         destroyTree(left);
         destroyTree(right);
@@ -347,7 +352,7 @@ void optimizeDivision(treeNode_t *node, treeNode_t *left, treeNode_t *right, boo
         setNodeType(node, NUMBER_TYPE);
         setLeft(node, NULL);
         setRight(node, NULL);
-        setData(node, {0});
+        setNumber(node, 0);
 
         TREE_DUMP(node, "Optimized division: ", DSL_SUCCESS);
         *changed = true;
@@ -383,7 +388,6 @@ int removeRedurantOperations(treeNode_t* node, bool* changed) {
             return DSL_SUCCESS;
         }
         case OPERATION_TYPE: {
-
             nodeOperation_t operation = getOperation(node);
             if (operation == NODE_ADD || operation == NODE_SUB) {
                 optimiseAddition(node, changed, left, right);
@@ -397,6 +401,10 @@ int removeRedurantOperations(treeNode_t* node, bool* changed) {
                 optimizeMultiplication(node, right, left, changed);
             }
             break;
+        }
+        default: {
+            PRINTERR("invalid node type");
+            return DSL_INVALID_INPUT;
         }
     }
     removeRedurantOperations(getLeft(node),  changed);

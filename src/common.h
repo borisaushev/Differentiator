@@ -102,9 +102,15 @@ typedef enum nodeType {
     PARAM_TYPE = 2,
 } nodeType_t;
 
+typedef struct dslParameter {
+    const char* name;
+    unsigned int hash;
+    int value;
+} dslParameter_t;
+
 union nodeData {
     int number;
-    char parameter;
+    dslParameter_t* parameter;
     nodeOperation_t operation;
 };
 
