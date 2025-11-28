@@ -66,7 +66,7 @@ static treeNode_t* getDslParameterOrFunction(char** curPos, char* start) {
     return createParameter(paramName);
 }
 
-treeNode_t* getBlockExpression(char** curPos, char* start) {
+static treeNode_t* getBlockExpression(char** curPos, char* start) {
     skipSpaces(curPos);
     char ch = **curPos;
     if (ch == '(') {

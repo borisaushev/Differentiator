@@ -111,7 +111,7 @@ int treeLog(const char* message, ...) {
 
 static size_t count = 0;
 int logTexMath(const char* message, ...) {
-    #ifdef DEBUG_TREE
+    #ifdef DEBUG_TEX
         FILE* texFile = fopen(TEX_FILE_PATH, count == 0 ? "w" : "a");
         if (!texFile) {
             RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open TEX log file");
@@ -137,7 +137,7 @@ int logTexMath(const char* message, ...) {
 }
 
 int logTex(const char* message, ...) {
-    #ifdef DEBUG_TREE
+    #ifdef DEBUG_TEX
         FILE* texFile = fopen(TEX_FILE_PATH, count == 0 ? "w" : "a");
         if (!texFile) {
             RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open TEX log file");
@@ -145,6 +145,7 @@ int logTex(const char* message, ...) {
 
         if (count++ == 0) {
             fprintf(texFile, "\\documentclass[12pt, letterpaper]{article}\n"
+                             "\\usepackage{amsmath}\n"
                              "\\author{Boss Boriss}\n"
                              "\\begin{document}\n"
                              "\\section*{Behold! The Differentiator itself!}\n\n");
@@ -174,9 +175,9 @@ void texLogRec(treeNode_t* node) {
         case OPERATION_TYPE: {
             operationInfo operation = DSL_OPERATIONS_INFO[getData(node).operation];
             if (operation.isAFunction) {
-                logTex("\\%s{", operation.representation);
+                logTex("\\%s(", operation.representation);
                 texLogRec(getLeft(node));
-                logTex("}");
+                logTex(")");
                 return;
             }
 

@@ -386,6 +386,18 @@ double constantsFolding(treeNode_t* node, bool* changed) {
                     result = leftValue / rightValue;
                     break;
                 }
+                case NODE_SIN: {
+                    result = sin(leftValue);
+                    break;
+                }
+                case NODE_COS: {
+                    result = cos(leftValue);
+                    break;
+                }
+                case NODE_LN: {
+                    result = log(leftValue);
+                    break;
+                }
                 default: {
                     PRINTERR("invalid operation");
                     return NAN;

@@ -61,10 +61,8 @@ static void dumpData(FILE* output, const stack_t *stack) {
         }
         else {
             for (size_t i = 0; i < stack->elementCount; i++) {
-                fprintf(output, "\t\t\tel[%zu]: " REG "\n", i, stack->array[i]);
             }
             for (size_t i = stack->elementCount; i < stack->capacity; i++) {
-                fprintf(output, "\t\t\t*el[%zu]: " REG "\n", i, stack->array[i]);
             }
         }
     }
