@@ -6,6 +6,7 @@
 #include "common.h"
 #include "stack.h"
 #include "treeDump.h"
+
 static dslParameter_t dslParameters[DSL_MAX_PARAMETERS] = {};
 static size_t dslParametersCount = 0;
 
@@ -129,7 +130,7 @@ treeNode_t* createParameter(char* param) {
     return result;
 }
 
-treeNode_t* createValue(int value) {
+treeNode_t* createNumber(int value) {
     treeNode_t* result = (treeNode_t*)calloc(1, sizeof(treeNode_t));
     result->nodeType = NUMBER_TYPE;
     result->left = NULL;

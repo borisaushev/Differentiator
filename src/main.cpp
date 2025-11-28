@@ -49,7 +49,7 @@ int main() {
     logTex("\n\\section{simplified expression}\n");
     logTreeTex(root);
 
-    printf(" = %d\n", findTreeValue(root));
+    printf(" = %.2f\n", findTreeValue(root));
 
     logTex("\\section{expression derivative}\n");
     printf("d/dx(");
@@ -76,7 +76,7 @@ int main() {
 
     printf("\nsimplified:\n");
     printTree(root);
-    printf(" = %d\n", findTreeValue(root));
+    printf(" = %.2f\n", findTreeValue(root));
 
     closeTex();
     free(buffer);

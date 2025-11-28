@@ -4,72 +4,102 @@
 #include "treeDump.h"
 #include "treeSctruct.h"
 
-int addFunction(treeNode_t *node) {
-    int leftValue = findTreeValue(getLeft(node));
-    int rightValue = findTreeValue(getRight(node));
+double addFunction(treeNode_t *node) {
+    double leftValue = findTreeValue(getLeft(node));
+    double rightValue = findTreeValue(getRight(node));
     treeLog("adding trees");
-    int value = leftValue + rightValue;
+    double value = leftValue + rightValue;
 
     logTex("\\begin{math}\n");
     texLogRec(node);
-    logTex(" = %d + %d = %d", leftValue, rightValue, value);
+    logTex(" = %.1f + %.1f = %.1f", leftValue, rightValue, value);
     logTex("\n\\end{math}\n\n");
 
-    treeLog("Add result: %d", value);
+    treeLog("Add result: %.1f", value);
     TREE_DUMP(node, "After add", DSL_SUCCESS);
     return value;
 }
 
-int subtractionFunction(treeNode_t *node) {
-    int leftValue = findTreeValue(getLeft(node));
-    int rightValue = findTreeValue(getRight(node));
+double subtractionFunction(treeNode_t *node) {
+    double leftValue = findTreeValue(getLeft(node));
+    double rightValue = findTreeValue(getRight(node));
 
     treeLog("subtracting trees");
-    int value =  leftValue - rightValue;
+    double value =  leftValue - rightValue;
 
     logTex("\\begin{math}\n");
     texLogRec(node);
-    logTex(" = %d - %d = %d", leftValue, rightValue, value);
+    logTex(" = %.1f - %.1f = %.1f", leftValue, rightValue, value);
     logTex("\n\\end{math}\n\n");
 
-    treeLog("Sub result: %d", value);
+    treeLog("Sub result: %.1f", value);
     TREE_DUMP(node, "After sub", DSL_SUCCESS);
     return value;
 }
 
-int multiplicationFunction(treeNode_t *node) {
-    int leftValue = findTreeValue(getLeft(node));
-    int rightValue = findTreeValue(getRight(node));
+double multiplicationFunction(treeNode_t *node) {
+    double leftValue = findTreeValue(getLeft(node));
+    double rightValue = findTreeValue(getRight(node));
     treeLog("multiplying trees");
-    int value =  leftValue * rightValue;
+    double value =  leftValue * rightValue;
 
     logTex("\\begin{math}\n");
     texLogRec(node);
-    logTex(" = %d * %d = %d", leftValue, rightValue, value);
+    logTex(" = %.1f * %.1f = %.1f", leftValue, rightValue, value);
     logTex("\n\\end{math}\n\n");
 
-    treeLog("Mul result: %d", value);
+    treeLog("Mul result: %.1f", value);
     TREE_DUMP(node, "After mul", DSL_SUCCESS);
     return value;
 }
 
-int divisionFunction(treeNode_t *node) {
-    int leftValue = findTreeValue(getLeft(node));
-    int rightValue = findTreeValue(getRight(node));
+double divisionFunction(treeNode_t *node) {
+    double leftValue = findTreeValue(getLeft(node));
+    double rightValue = findTreeValue(getRight(node));
     treeLog("dividing trees");
-    int value =  leftValue / rightValue;
+    double value =  leftValue / rightValue;
 
     logTex("\\begin{math}\n");
     texLogRec(node);
-    logTex(" = \\frac{%d}{%d} = %d", leftValue, rightValue, value);
+    logTex(" = \\frac{%.1f}{%.1f} = %.1f", leftValue, rightValue, value);
     logTex("\n\\end{math}\n\n");
 
-    treeLog("Div result: %d", value);
+    treeLog("Div result: %.1f", value);
     TREE_DUMP(node, "After div", DSL_SUCCESS);
     return value;
 }
 
-int findTreeValue(treeNode_t* node) {
+double sinFunction(treeNode_t *node) {
+    double expressionValue = findTreeValue(getLeft(node));
+    treeLog("evaluating sin");
+    double result = sin(expressionValue);
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = \\sin{%.1f} = %.1f", expressionValue, result);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("Sin result: %.1f", result);
+    TREE_DUMP(node, "After sin", DSL_SUCCESS);
+    return result;
+}
+
+double cosFunction(treeNode_t *node) {
+    double expressionValue = findTreeValue(getLeft(node));
+    treeLog("evaluating cos");
+    double result = cos(expressionValue);
+
+    logTex("\\begin{math}\n");
+    texLogRec(node);
+    logTex(" = \\cos{%.1f} = %.1f", expressionValue, result);
+    logTex("\n\\end{math}\n\n");
+
+    treeLog("cos result: %.1f", result);
+    TREE_DUMP(node, "After cos", DSL_SUCCESS);
+    return result;
+}
+
+double findTreeValue(treeNode_t* node) {
     if (node == NULL) {
         PRINTERR("NULL NODE");
         return 0;
@@ -171,6 +201,40 @@ treeNode_t* diffDivision(treeNode_t* node) {
     return result;
 }
 
+treeNode_t* diffSin(treeNode_t* node) {
+    treeLog("Differentiating sin");
+    setOperation(node, NODE_MUL);
+    treeNode_t* expression = getLeft(node);
+
+    treeNode_t* expressionCopy = copyTree(expression);
+    TREE_DUMP(expressionCopy, "copied left tree", DSL_SUCCESS);
+
+    treeNode_t* dExpression = differentiate(expression);
+    TREE_DUMP(dExpression, "d/dx Left tree", DSL_SUCCESS);
+
+    treeNode_t* result = MUL(COS(expressionCopy), dExpression);
+    TREE_DUMP(result, "new operation", DSL_SUCCESS);
+
+    return result;
+}
+
+treeNode_t* diffCos(treeNode_t* node) {
+    treeLog("Differentiating Cos");
+    setOperation(node, NODE_MUL);
+    treeNode_t* expression = getLeft(node);
+
+    treeNode_t* expressionCopy = copyTree(expression);
+    TREE_DUMP(expressionCopy, "copied left tree", DSL_SUCCESS);
+
+    treeNode_t* dExpression = differentiate(expression);
+    TREE_DUMP(dExpression, "d/dx Left tree", DSL_SUCCESS);
+
+    treeNode_t* result = MUL(NEG(COS(expressionCopy)), dExpression);
+    TREE_DUMP(result, "new operation", DSL_SUCCESS);
+
+    return result;
+}
+
 treeNode_t* differentiate(treeNode_t* node) {
     TREE_DUMP(node, "Differentiating tree", DSL_SUCCESS);
     switch (getNodeType(node)) {
@@ -219,10 +283,18 @@ void printTree(treeNode_t* node) {
             return;
         }
         case OPERATION_TYPE: {
+            operationInfo operation = DSL_OPERATIONS_INFO[getOperation(node)];
+            if (operation.isAFunction) {
+                printf("%s(", operation.representation);
+                printTree(getLeft(node));
+                printf(")");
+                return;
+            }
+
             printf("(");
             printTree(getLeft(node));
 
-            printf(" %c ", DSL_OPERATIONS_INFO[getOperation(node)].representation);
+            printf(" %s ", operation.representation);
 
             printTree(getRight(node));
             printf(")");

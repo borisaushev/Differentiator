@@ -21,7 +21,7 @@ static void addNodeInfo(FILE* file, int index, treeNode_t* node, const char* con
         }
         case OPERATION_TYPE: {
             fprintf(file, "| type: OPERATION | val: ");
-            fprintf(file, "%c", DSL_OPERATIONS_INFO[getData(node).operation].representation);
+            fprintf(file, "%s", DSL_OPERATIONS_INFO[getData(node).operation].representation);
             fprintf(file, " | ");
             break;
         }
@@ -88,9 +88,10 @@ static void fillHtmlHeader(const char *desc, const char *fileName, const int lin
             counter, desc, func, fileName, line, code);
 }
 
+static size_t counter = 0;
 int treeLog(const char* message, ...) {
     #ifdef DEBUG_TREE
-        FILE* htmlFile = fopen(HTML_FILE_PATH, "a");
+        FILE* htmlFile = fopen(HTML_FILE_PATH, counter++ == 0 ? "w" : "a");
         if (!htmlFile) {
             RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open HTML log file");
         }
@@ -171,6 +172,14 @@ void texLogRec(treeNode_t* node) {
             return;
         }
         case OPERATION_TYPE: {
+            operationInfo operation = DSL_OPERATIONS_INFO[getData(node).operation];
+            if (operation.isAFunction) {
+                logTex("\\%s{", operation.representation);
+                texLogRec(getLeft(node));
+                logTex("}");
+                return;
+            }
+
             if (getOperation(node) == NODE_DIV) {
                 logTex("\\frac{");
                 texLogRec(getLeft(node));
@@ -184,7 +193,7 @@ void texLogRec(treeNode_t* node) {
             }
             texLogRec(getLeft(node));
 
-            logTex(" %c ", DSL_OPERATIONS_INFO[getOperation(node)].representation);
+            logTex(" %s ", operation.representation);
 
             texLogRec(getRight(node));
             if (getOperation(node) != NODE_MUL) {
@@ -216,8 +225,6 @@ void closeTex() {
 
 int treeDump(treeNode_t* node, const char* desc, const char* file,
              const int   line, const char* func, int code, const char* const fillColor) {
-    static size_t counter = 0;
-
     FILE* htmlFile = fopen(HTML_FILE_PATH, counter++ == 0 ? "w" : "a");
     if (!htmlFile) {
         RETURN_ERR(TR_CANT_OPEN_FILE, "Cannot open HTML log file");

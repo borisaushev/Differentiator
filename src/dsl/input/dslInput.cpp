@@ -21,10 +21,10 @@ treeNode_t* getNumber(char** curPos, char* start) {
     skipSpaces(curPos);
 
     dumpBuffer(curPos, start);
-    return createValue(val);
+    return createNumber(val);
 }
 
-treeNode_t* getParameter(char** curPos, char* start) {
+static treeNode_t* getDslParameterOrFunction(char** curPos, char* start) {
     skipSpaces(curPos);
 
     char ch = **curPos;
@@ -38,6 +38,29 @@ treeNode_t* getParameter(char** curPos, char* start) {
     sscanf(*curPos, "%[A-Za-z]%n", paramName, &skipped);
     *curPos += skipped;
     skipSpaces(curPos);
+
+    for (int i = 0; i < DSL_OPERATIONS_COUNT; i++) {
+        if(!strcmp(paramName, DSL_OPERATIONS_INFO[i].representation)) {
+            if (**curPos != '(') {
+                PRINTERR("Expected opening bracket '('. Invalid character '%c' (%d) at %s:%d:%zu\n",
+                       **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
+                return NULL;
+            }
+            *curPos += 1;
+            skipSpaces(curPos);
+
+            treeNode_t* node = getExpression(curPos, start);
+
+            if (**curPos != ')') {
+                PRINTERR("Expected closing bracket ')'. Invalid character '%c' (%d) at %s:%d:%zu\n",
+                    **curPos, **curPos, DSL_FILE_PATH, 1, (*curPos - start + 1));
+                return NULL;
+            }
+            *curPos += 1;
+            skipSpaces(curPos);
+            return createOperation(NODE_SIN, node, NULL);
+        }
+    }
 
     dumpBuffer(curPos, start);
     return createParameter(paramName);
@@ -70,7 +93,7 @@ treeNode_t* getBlockExpression(char** curPos, char* start) {
         return result;
     }
     else {
-        treeNode_t* result = getParameter(curPos, start);
+        treeNode_t* result = getDslParameterOrFunction(curPos, start);
         dumpBuffer(curPos, start);
         return result;
     }

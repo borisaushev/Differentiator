@@ -8,7 +8,7 @@ const int DSL_MAX_PARAMETERS = 100;
 size_t getParametersCount();
 dslParameter_t* getParameter(size_t index);
 
-treeNode_t* createValue(int value);
+treeNode_t* createNumber(int value);
 treeNode_t* createOperation(nodeOperation_t operation, treeNode* left, treeNode* right);
 treeNode_t* createParameter(char* param);
 treeNode_t* createNode(nodeData data, nodeType_t nodeType, treeNode* left, treeNode* right);

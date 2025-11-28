@@ -94,6 +94,8 @@ typedef enum nodeOperation {
     NODE_SUB,
     NODE_MUL,
     NODE_DIV,
+    NODE_SIN,
+    NODE_COS
 } nodeOperation_t;
 
 typedef enum nodeType {
